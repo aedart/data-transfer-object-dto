@@ -8,6 +8,7 @@ use Faker\Factory;
 /**
  * Class DataTransferObjectTest
  *
+ * @group dto
  * @coversDefaultClass Aedart\DTO\DataTransferObject
  *
  * @author Alin Eugen Deac <aedart@gmail.com>

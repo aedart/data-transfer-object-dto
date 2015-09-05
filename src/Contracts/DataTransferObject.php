@@ -3,6 +3,7 @@
 use Aedart\Overload\Interfaces\PropertyOverloadable;
 use Aedart\Util\Interfaces\Populatable;
 use ArrayAccess;
+use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
@@ -25,4 +26,12 @@ interface DataTransferObject extends PropertyOverloadable, ArrayAccess, Arrayabl
      */
     public function populatableProperties();
 
+    /**
+     * Returns the container that is responsible for
+     * resolving dependency injection or eventual
+     * nested object
+     *
+     * @return Container IoC service Container
+     */
+    public function container();
 }

@@ -2,6 +2,8 @@
 
 use Aedart\DTO\Contracts\DataTransferObject as DataTransferObjectInterface;
 use Aedart\Overload\Traits\PropertyOverloadTrait;
+use Illuminate\Contracts\Container\Container;
+use Illuminate\Support\Facades\App;
 use ReflectionClass;
 
 /**
@@ -16,15 +18,100 @@ use ReflectionClass;
  */
 abstract class DataTransferObject implements DataTransferObjectInterface {
 
-    use PropertyOverloadTrait;
+    use PropertyOverloadTrait {
+        __set as __setFromTrait;
+    }
+
+    /**
+     * Container that must resolve
+     * dependency injection, should it be
+     * needed
+     *
+     * @var Container|null The IoC service container
+     */
+    private $ioc = null;
 
     /**
      * Create a new instance of this Data Transfer Object
      *
+     * <br />
+     *
+     * <b>IoC Service Container</b>: If no container is provided, a default
+     * service container is attempted to be resolved, using a application
+     * facade.
+     *
+     * @see \Aedart\DTO\Providers\Bootstrap
+     * @see \Illuminate\Contracts\Container\Container
+     * @see http://laravel.com/docs/5.1/container#introduction
+     *
      * @param array $data [optional] This object's properties / attributes
+     * @param Container $container [optional] Eventual container that is responsible for resolving dependency injection
      */
-    public function __construct(array $data = []) {
+    public function __construct(array $data = [], Container $container = null) {
         $this->populate($data);
+        $this->ioc = $container;
+    }
+
+    public function container() {
+        if(is_null($this->ioc)){
+            $this->ioc = App::getFacadeApplication();
+        }
+
+        return $this->ioc;
+    }
+
+    protected function resolveFromContainer(ReflectionClass $reflection, $value){
+        $className = $reflection->getName();
+
+        // If the value corresponds to the given expected class,
+        // then there is no need to resolve anything from the
+        // IoC service container.
+        if($value instanceof $className){
+            return $value;
+        }
+
+        // TODO: Default container so powerfull that it will attempt to
+        // TODO: create instance of class - yet fails to populate...
+        // TODO: This is by far the safest option...
+        if(!$this->container()->bound($className)){
+            throw new \Exception('SHOULD FAIL!');
+        }
+
+        return $this->container()->make($className, $value);
+
+        // TODO: The problem; Container::getConcrete()
+
+        // If we don't have a registered resolver or concrete for the type, we'll just
+        // assume each type is a concrete name and will attempt to resolve it as is
+        // since the container should be able to resolve concretes automatically.
+
+        // TODO: Perhaps play a bit with populatable interface... or maybe Data Transfer Object Interface
+    }
+
+    protected function resolveValue($getterMethodName, $value){
+        $reflection = new ReflectionClass($this);
+
+        $method = $reflection->getMethod($getterMethodName);
+
+        $parameter = $method->getParameters()[0];
+
+        if($propertyReflectionClass = $parameter->getClass()){
+            return $this->resolveFromContainer($propertyReflectionClass, $value);
+        }
+
+        return $value;
+    }
+
+    public function __set($name, $value) {
+
+        $resolvedValue = $value;
+
+        $methodName = $this->generateSetterName($name);
+        if($this->hasInternalMethod($methodName)){
+            $resolvedValue = $this->resolveValue($methodName, $value);
+        }
+
+        $this->__setFromTrait($name, $resolvedValue);
     }
 
     public function populatableProperties(){
