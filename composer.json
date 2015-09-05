@@ -1,0 +1,38 @@
+{
+  "name": "aedart/dto",
+  "description": "TODO",
+  "keywords": [
+    "Data Transfer Object",
+    "DTO"
+  ],
+  "homepage": "https://bitbucket.org/aedart/data-transfer-object-dto",
+  "license": "BSD-3-Clause",
+  "type": "library",
+  "authors": [
+    {
+      "name": "Alin Eugen Deac",
+      "email": "aedart@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=5.5.9",
+    "aedart/overload": "~1.3",
+    "aedart/util": "~1.2",
+    "illuminate/container": "~5.1",
+    "illuminate/support": "~5.1"
+  },
+  "require-dev": {
+    "aedart/license": "1.*",
+    "aedart/license-file-manager": "1.*",
+    "codeception/codeception": "~2.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "Aedart\\DTO\\": "src/"
+    }
+  },
+  "minimum-stability": "stable",
+  "scripts": {
+    "post-update-cmd": "vendor/bin/license-manager license:copy vendor/aedart/license/aedart/BSD-3-Clause"
+  }
+}
