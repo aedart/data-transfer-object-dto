@@ -278,7 +278,7 @@ echo $person->toJson() // The same as invoking json_encode($person);
 
 In this interpretation of the DTO, each instance must hold a reference to an [IoC service container](http://laravel.com/docs/5.1/container).
 
-If you do not know what this mean or how this works, please start off by reading the [wiki-article](https://en.wikipedia.org/wiki/Inversion_of_control) about it.
+If you do not know what this means or how this works, please start off by reading the [wiki-article](https://en.wikipedia.org/wiki/Inversion_of_control) about it.
 
 #### Bootstrapping a service container ####
 
@@ -286,23 +286,27 @@ If you are using this package inside a [Laravel](http://laravel.com/) applicatio
 
 ```
 #!php
+<?php
+
+use Aedart\DTO\Providers\Bootstrap;
 
 // Invoke the bootstrap's boot method, before using any DTOs
+// Ideally, this should happen along side your application other bootstrapping logic
 Bootstrap::boot(); // A default service container is now available 
 
 ```
 
 ### Nested instances ###
 
-Image that your `Person` DTO accepts a more complex data, e.g. an address;
+Image that your `Person` DTO accepts more complex properties, e.g. an address;
 
-NOTE: This example will only work if;
+_NOTE_: This example will only work if;
 
 a) You are using the DTO inside a [Laravel](http://laravel.com/) application
 
 or
 
-b) You have invoked the `Bootstrap::boot()` method, before using the given DTO
+b) You have invoked the `Bootstrap::boot()` method, before using the given DTO (...again, not needed if you are using this inside a Laravel application)
 
 ```
 #!php
@@ -382,13 +386,140 @@ $person = new Person($data);    // Will automatically resolve (if possible) $add
 ```
 
 In the above example, [Laravel's Service Container](http://laravel.com/docs/5.1/container) attempts to find and create any concrete instances that are expected.
+
 Furthermore, the default DTO abstraction (`\Aedart\DTO\DataTransferObject`) will attempt to automatically populate that instance.
+
+### Interface bindings ###
+
+If you prefer to use interfaces instead, then you need to `bind` those interfaces to concrete instances, before the DTOs / service container can handle and resolve them.
+
+#### Outside Laravel Application ####
+
+If you are outside a Laravel application, then you can bind interfaces to concrete instances, in the following way;
+
+```
+#!php
+<?php
+
+// Somewhere in your application's bootstrapping logic
+
+use Aedart\DTO\Providers\Bootstrap;
+
+// Boot up the service container
+Bootstrap::boot(); 
+
+// Register / bind your interfaces to concrete instances
+Bootstrap::getContainer()->bind(CityInterface::class, function($app, $data){
+    return new City($data); // Concrete implementation of the CityInterface - remember to pass in parameters!
+});
+
+```
+
+_NOTE_: Here, you are responsible for populating the given concrete instance
+
+#### Inside Laravel Application ####
+
+Inside your application's [service provider](http://laravel.com/docs/5.1/providers) (or perhaps a custom service provider), you can bind your DTO interfaces to concrete instances;
+
+```
+#!php
+<?php
+
+// ... somewhere inside your service provider
+
+// Register / bind your interfaces to concrete instances
+$this->app->bind(CityInterface::class, function($app, $data){
+    return new City($data); // Concrete implementation of the CityInterface - remember to pass in parameters!
+});
+
+```
+
+_NOTE_: Here, you are responsible for populating the given concrete instance
+
+#### Example ####
+
+Given that you have bound your interfaces to concrete instances, then the following is possible
+
+```
+#!php
+<?php
+use Aedart\DTO\Contracts\DataTransferObject as DataTransferObjectInterface
+use Aedart\DTO\DataTransferObject;
+
+// Interface for a City
+interface CityInterface extends DataTransferObjectInterface {
+
+    /**
+     * Set the city's name
+     *
+     * @param string $name
+     */
+    public function setName($name);
+    
+    /**
+     * Get the city's name
+     *
+     * @return string
+     */
+    public function getName();   
+
+}
+
+// Concrete implementation of City
+class City extends DataTransferObject implements CityInterface {
+ 
+    protected $name = '';
+    
+    // ... getter and setter implementation not shown ... //
+}
+
+// Address class now also accepts a city property, of the type CityInterface
+class Address extends DataTransferObject{
+
+    protected $street = ''
+
+    protected $city = null;
+
+    // ... street getter and setter implementation not shown ... //
+    
+     /**
+      * Set the city
+      *
+      * @param CityInterface $address
+      */
+     public function setCity(CityInterface $city){
+         $this->city = $city;
+     }
+     
+     /**
+      * Get the city
+      *
+      * @return CityInterface
+      */
+     public function getCity(){
+         return $this->city;
+     }
+}
+
+// ... some other place in your application ... //
+
+$addressData = [
+    'street' => 'Marshall Street 27',
+    'city' => [
+        'name' => 'Lincoln'
+    ]
+];
+
+// Create new instance and populate
+$address = new Address($addressData);   // Will attempt to automatically resolve the expected city property,
+                                        // of the CityInterface type, by creating a concrete City, using
+                                        // the service container.
+
+```
 
 ## Contribution ##
 
 ## Acknowledgement ##
-
-
 
 ## License ##
 
