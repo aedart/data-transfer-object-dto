@@ -35,35 +35,175 @@ This package uses [composer](https://getcomposer.org/). If you do not know what 
 
 ## Quick start ##
 
-Provided that you have an interface, e.g. for a book, you can extend the Uuid-Aware interface;
+### Custom Interface for your DTO ###
+
+Start off by creating an interface for your DTO. Below is an example for a simple Person interface
 
 ```
 #!php
 <?php
-use Aedart\Model\Uuid\Interfaces\UuidAware;
+use Aedart\DTO\Contracts\DataTransferObject as DataTransferObjectInterface
 
-interface IBook extends UuidAware {
+interface PersonInterface extends DataTransferObjectInterface {
 
-    // ... Remaining interface implementation not shown ...
+    /**
+     * Set the person's name
+     *
+     * @param string $name
+     */
+    public function setName($name);
     
+    /**
+     * Get the person's name
+     *
+     * @return string
+     */
+    public function getName();
+    
+    /**
+     * Set the person's age
+     *
+     * @param int $age
+     */
+    public function setAge($age);
+    
+    /**
+     * Get the person's age
+     *
+     * @return int
+     */
+    public function getAge();
 }
 
 ```
 
-In your concrete implementation, you simple use the uuid-trait;
+### Concrete implementation of your DTO ###
+
+Create a concrete instance of your interface.
  
 ```
 #!php
 <?php
-use Aedart\Model\Uuid\Traits\UuidTrait;
+use Aedart\DTO\DataTransferObject;
 
-class MyBook implements IBook {
+class Person extends DataTransferObject implements PersonInterface {
  
-    use UuidTrait;
-
-    // ... Remaining implementation not shown ... 
+    protected $name = '';
+    
+    protected $age = 0;
+ 
+    /**
+     * Set the person's name
+     *
+     * @param string $name
+     */
+    public function setName($name){
+        $this->name = $name;
+    }
+    
+    /**
+     * Get the person's name
+     *
+     * @return string
+     */
+    public function getName(){
+        return $this->name;
+    }
+    
+    /**
+     * Set the person's age
+     *
+     * @param int $age
+     */
+    public function setAge($age){
+        $this->age = $age;
+    }
+    
+    /**
+     * Get the person's age
+     *
+     * @return int
+     */
+    public function getAge(){
+        return $this->age;
+    } 
  
 }
+```
+
+Now you are ready to use the DTO. The following sections will highlight some of the usage scenarios. 
+
+### Property overloading ###
+
+Each defined property is accessible in multiple ways, if a getter and or setter method has been defined for that given property.
+
+For additional information, please read about [Mutators and Accessor](https://en.wikipedia.org/wiki/Mutator_method), [PHP's overloading](http://php.net/manual/en/language.oop5.overloading.php),
+and [PHP's Array-Access](http://php.net/manual/en/class.arrayaccess.php)
+
+```
+#!php
+<?php
+
+// Create a new instance of your DTO
+$person = new Person();
+
+// Name can be set using normal setter methods
+$person->setName('John');
+
+// But you can also just invoke the property itself
+$person->name = 'Jack' // Will automatically invoke setName()
+
+// And you can also set it, using an array-accessor
+$person['name'] = 'Jane' // Will also automatically invoke setName()
+
+// ... //
+
+// Obtain age using the regular getter method
+$age = $person->getAge();
+
+// Can also get it via invoking the property directly
+$age = $person->age; // Will automatically invoke getAge()
+
+// Lastly, it can also be access via an array-accessor
+$age = $person['age'];
+
+```
+
+### Populating via an array ###
+
+You can populate your DTO using an array.
+
+```
+#!php
+<?php
+
+// property-name => value array
+$data = [
+    'name' => 'Timmy Jones',
+    'age'  => 32
+];
+
+// Create instance and invoke populate
+$person = new Person();
+$person->populate($data); // setName() and setAge() is invoked with the given values
+
+```
+
+If you are extending the default DTO abstraction, then you can also pass in an array in the constructor
+
+```
+#!php
+<?php
+
+// property-name => value array
+$data = [
+    'name' => 'Carmen Rock',
+    'age'  => 25
+];
+
+// Create instance and invoke populate
+$person = new Person($data); // invokes populate(...), which then invokes the setter methods
+
 ```
 
 ## Acknowledgement ##
