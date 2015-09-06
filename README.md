@@ -1,3 +1,10 @@
+[![Latest Stable Version](https://poser.pugx.org/aedart/dto/v/stable)](https://packagist.org/packages/aedart/dto)
+[![Total Downloads](https://poser.pugx.org/aedart/dto/downloads)](https://packagist.org/packages/aedart/dto)
+[![Latest Unstable Version](https://poser.pugx.org/aedart/dto/v/unstable)](https://packagist.org/packages/aedart/dto)
+[![License](https://poser.pugx.org/aedart/dto/license)](https://packagist.org/packages/aedart/dto)
+[![Monthly Downloads](https://poser.pugx.org/aedart/dto/d/monthly)](https://packagist.org/packages/aedart/dto)
+[![Daily Downloads](https://poser.pugx.org/aedart/dto/d/daily)](https://packagist.org/packages/aedart/dto)
+
 ## Data Transfer Object (DTO) ##
 
 A variation / interpretation of the Data Transfer Object (DTO) design pattern (Distribution Pattern). A DTO is nothing more than an object that
