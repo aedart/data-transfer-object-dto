@@ -129,6 +129,31 @@ class NestedDataTransferObjectTest extends \Codeception\TestCase\Test
 
     /**
      * @test
+     *
+     * @covers ::__set
+     *
+     * @covers ::resolveValue
+     * @covers ::resolveParameter
+     * @covers ::resolveUnboundInstance
+     */
+    public function canResolveUsingOverloadMethodDirectly(){
+        $person = new Person();
+
+        $data = [
+            'street' => $this->faker->streetName,
+            'city' => [
+                'name' => $this->faker->city,
+                'zipCode' => $this->faker->postcode
+            ]
+        ];
+
+        $person->address = $data;
+
+        $this->assertSame($data['city']['zipCode'], $person->address->city->zipCode, 'ZipCode was expected to be of a different value!');
+    }
+
+    /**
+     * @test
      * @covers ::__set
      *
      * @covers ::resolveValue
