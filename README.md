@@ -12,6 +12,9 @@ can hold some data. Most commonly it is used for for transporting that data betw
 
 This package provides an abstraction for such DTOs.
 
+If you don't know about DTOs, I recommend you to read [Martin Fowler's description](http://martinfowler.com/eaaCatalog/dataTransferObject.html) of DTO, and perhaps
+perform a few [Google searches](https://www.google.com/search?q=data+transfer+object&ie=utf-8&oe=utf-8) about this topic.
+
 ## Contents ##
 
 [TOC]
@@ -254,7 +257,20 @@ The above example will output the following;
 }
 ```
 
+You can also perform json serialization directly on the DTO, by invoking the `toJson()` method.
 
+```
+#!php
+<?php
+
+$person = new Person([
+    'name' => 'Rian Dou',
+    'age' => 29
+]);
+
+echo $person->toJson() // The same as invoking json_encode($person);
+
+```
 
 ## Acknowledgement ##
 
