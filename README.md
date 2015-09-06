@@ -513,13 +513,45 @@ $addressData = [
 // Create new instance and populate
 $address = new Address($addressData);   // Will attempt to automatically resolve the expected city property,
                                         // of the CityInterface type, by creating a concrete City, using
-                                        // the service container.
+                                        // the service container, and resolve the bound interface instance
 
 ```
 
 ## Contribution ##
 
+Have you found a defect ( [bug or design flaw](https://en.wikipedia.org/wiki/Software_bug) ), or do you wish improvements? In the following sections, you might find some useful information
+on how you can help this project. In any case, I thank you for taking the time to help me improve this project’s deliverables and overall quality.
+
+### Bug Report ###
+
+If you are convinced that you have found a bug, at the very least you should create a new issue. In that given issue, you should as a minimum describe the following;
+
+* Where is the defect located
+* A good, short and precise description of the defect (Why is it a defect)
+* How to replicate the defect
+* (A possible solution for how to resolve the defect)
+
+When time permits it, I will review your issue and take action upon it.
+
+### Fork, code and send pull-request ###
+
+A good and well written bug report can help me a lot. Nevertheless, if you can or wish to resolve the defect by yourself, here is how you can do so;
+
+* Fork this project
+* Create a new local development branch for the given defect-fix
+* Write your code / changes
+* Create executable test-cases (prove that your changes are solid!)
+* Commit and push your changes to your fork-repository
+* Send a pull-request with your changes
+* _Drink a [Beer](https://en.wikipedia.org/wiki/Beer) - you earned it_ :)
+
+As soon as I receive the pull-request (and have time for it), I will review your changes and merge them into this project. If not, I will inform you why I choose not to.
+
 ## Acknowledgement ##
+
+* [Martin Fowler](http://martinfowler.com/aboutMe.html), for sharing his knowledge about [DTOs](http://martinfowler.com/eaaCatalog/dataTransferObject.html) and many other design patterns
+* [Taylor Otwell](https://github.com/taylorotwell), for creating [Laravel](http://laravel.com) and especially the [Service Container](http://laravel.com/docs/5.1/container), that I'm using daily
+* [Jeffrey Way](https://github.com/JeffreyWay), for creating [Laracasts](https://laracasts.com/) - a great place to learn new things... And where I finally understood some of the principles of IoC!
 
 ## License ##
 
