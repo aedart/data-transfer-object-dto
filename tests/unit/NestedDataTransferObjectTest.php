@@ -155,6 +155,29 @@ class NestedDataTransferObjectTest extends \Codeception\TestCase\Test
 
     /**
      * @test
+     * @covers ::jsonSerialize
+     */
+    public function canSerialiseNestedInstances(){
+        $personData = [
+            'name' => $this->faker->name,
+            'address'   => [
+                'street' => $this->faker->streetName,
+                'city' => [
+                    'name' => $this->faker->city,
+                    'zipCode' => $this->faker->postcode
+                ]
+            ]
+        ];
+
+        $person = new Person($personData);
+
+        $serialized = json_encode($person);
+        
+        $this->assertJson($serialized, 'Could not serialise nested instances');
+    }
+
+    /**
+     * @test
      *
      * @covers ::__set
      *
