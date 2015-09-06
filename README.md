@@ -520,7 +520,7 @@ $address = new Address($addressData);   // Will attempt to automatically resolve
 ## Contribution ##
 
 Have you found a defect ( [bug or design flaw](https://en.wikipedia.org/wiki/Software_bug) ), or do you wish improvements? In the following sections, you might find some useful information
-on how you can help this project. In any case, I thank you for taking the time to help me improve this project’s deliverables and overall quality.
+on how you can help this project. In any case, I thank you for taking the time to help me improve this project's deliverables and overall quality.
 
 ### Bug Report ###
 
@@ -529,7 +529,7 @@ If you are convinced that you have found a bug, at the very least you should cre
 * Where is the defect located
 * A good, short and precise description of the defect (Why is it a defect)
 * How to replicate the defect
-* (A possible solution for how to resolve the defect)
+* (_A possible solution for how to resolve the defect_)
 
 When time permits it, I will review your issue and take action upon it.
 
@@ -545,7 +545,7 @@ A good and well written bug report can help me a lot. Nevertheless, if you can o
 * Send a pull-request with your changes
 * _Drink a [Beer](https://en.wikipedia.org/wiki/Beer) - you earned it_ :)
 
-As soon as I receive the pull-request (and have time for it), I will review your changes and merge them into this project. If not, I will inform you why I choose not to.
+As soon as I receive the pull-request (_and have time for it_), I will review your changes and merge them into this project. If not, I will inform you why I choose not to.
 
 ## Acknowledgement ##
 
