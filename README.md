@@ -272,6 +272,120 @@ echo $person->toJson() // The same as invoking json_encode($person);
 
 ```
 
+## Advanced usage ##
+
+### Inversion of Control (IoC) / Dependency Injection ###
+
+In this interpretation of the DTO, each instance must hold a reference to an [IoC service container](http://laravel.com/docs/5.1/container).
+
+If you do not know what this mean or how this works, please start off by reading the [wiki-article](https://en.wikipedia.org/wiki/Inversion_of_control) about it.
+
+#### Bootstrapping a service container ####
+
+If you are using this package inside a [Laravel](http://laravel.com/) application, then you can skip this part; it is NOT needed!
+
+```
+#!php
+
+// Invoke the bootstrap's boot method, before using any DTOs
+Bootstrap::boot(); // A default service container is now available 
+
+```
+
+### Nested instances ###
+
+Image that your `Person` DTO accepts a more complex data, e.g. an address;
+
+NOTE: This example will only work if;
+
+a) You are using the DTO inside a [Laravel](http://laravel.com/) application
+
+or
+
+b) You have invoked the `Bootstrap::boot()` method, before using the given DTO
+
+```
+#!php
+<?php
+use Aedart\DTO\DataTransferObject;
+
+// None-interfaced class is on purpose for this example
+class Address extends DataTransferObject{
+
+    protected $street = ''
+
+    /**
+     * Set the street
+     *
+     * @param string $street
+     */
+    public function setStreet($street){
+        $this->street = $street;
+    }
+    
+    /**
+     * Get the street
+     *
+     * @return string
+     */
+    public function getStreet(){
+        return $this->street;
+    }
+}
+
+// You Person DTO now accepts an address object
+class Person extends DataTransferObject implements PersonInterface {
+ 
+    protected $name = '';
+    
+    protected $age = 0;
+ 
+    protected $address = null;
+ 
+    // ... getters and setters for name and age not shown ... //
+
+     /**
+      * Set the address
+      *
+      * @param Address $address
+      */
+     public function setAddress(Address $address){
+         $this->address = $address;
+     }
+     
+     /**
+      * Get the address
+      *
+      * @return Address
+      */
+     public function getAddress(){
+         return $this->address;
+     }
+}
+
+// ... some place else, in your application ... //
+
+// Data for your Person DTO
+$data = [
+    'name' => 'Arial Jackson',
+    'age' => 42,
+    
+    // Notice that we are NOT passing in an instance of Address, but an array instead!
+    'address' => [
+        'street' => 'Somewhere str. 44'
+    ]
+];
+
+$person = new Person($data);    // Will automatically resolve (if possible) $address, create an instance of
+                                // of the Address class, and populate it with the given street value
+
+```
+
+In the above example, [Laravel's Service Container](http://laravel.com/docs/5.1/container) attempts to find and create any concrete instances that are expected.
+Furthermore, the default DTO abstraction (`\Aedart\DTO\DataTransferObject`) will attempt to automatically populate that instance.
+
+## Contribution ##
+
 ## Acknowledgement ##
 
 
