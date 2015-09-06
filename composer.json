@@ -1,9 +1,10 @@
 {
   "name": "aedart/dto",
-  "description": "TODO",
+  "description": "A variation / interpretation of the Data Transfer Object (DTO) design pattern (Distribution Pattern)",
   "keywords": [
     "Data Transfer Object",
-    "DTO"
+    "DTO",
+    "Design Pattern"
   ],
   "homepage": "https://bitbucket.org/aedart/data-transfer-object-dto",
   "license": "BSD-3-Clause",
