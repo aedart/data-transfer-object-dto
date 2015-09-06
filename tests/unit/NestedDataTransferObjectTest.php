@@ -57,7 +57,7 @@ class NestedDataTransferObjectTest extends \Codeception\TestCase\Test
      * @test
      * @covers ::__set
      */
-    public function canPopulateScalarProperty(){
+    public function canPopulatePropertyOfPrimitiveType(){
         $data = [
             'name' => $this->faker->name
         ];
@@ -70,6 +70,9 @@ class NestedDataTransferObjectTest extends \Codeception\TestCase\Test
     /**
      * @test
      * @covers ::__set
+     *
+     * @covers ::resolveValue
+     * @covers ::resolveParameter
      */
     public function canPopulateWithNestedObjectInstance(){
         $cityData = [
@@ -94,20 +97,18 @@ class NestedDataTransferObjectTest extends \Codeception\TestCase\Test
     }
 
     /**
+     * Please note: because we are using Laravel's default container, it
+     * can handle creating instances of concrete classes that are expected.
+     * Thus, there is no need to `bind` them, in this case
+     *
      * @test
      * @covers ::__set
+     *
+     * @covers ::resolveValue
+     * @covers ::resolveParameter
+     * @covers ::resolveUnboundInstance
      */
-    public function canResolveAndPopulateFromServiceContainer() {
-        $container = $this->getContainer();
-
-        // Make the bindings
-        $container->bind(Address::class, function($container, $parameters){
-            return new Address($parameters);
-        });
-        $container->bind(City::class, function($container, $parameters){
-            return new City($parameters);
-        });
-
+    public function canResolveAndPopulateUnboundConcreteInstances() {
         $personData = [
             'name' => $this->faker->name,
             'address'   => [
@@ -129,19 +130,56 @@ class NestedDataTransferObjectTest extends \Codeception\TestCase\Test
     /**
      * @test
      * @covers ::__set
+     *
+     * @covers ::resolveValue
+     * @covers ::resolveParameter
+     *
+     * @expectedException \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function failsResolvingWhenObjectNotBound(){
-        //$container = $this->getContainer();
+    public function failsPopulatingUnboundAbstractInstances(){
+        $personData = [
+            'name' => $this->faker->name,
+            'address'   => [
+                'street' => $this->faker->streetName,
+                'city' => [
+                    'name' => $this->faker->city,
+                    'zipCode' => $this->faker->postcode
+                ]
+            ],
 
-        // Make the bindings
-//        $container->bind(Address::class, function($container, $parameters){
-//            return new Address($parameters);
-//        });
+            // Person expects a type of `NotesInterface`
+            // which in this test has NOT been bound, thus
+            // this should fail - Laravel's container should
+            // make sure of that
+            'notes' => [
+                'notes' => [
+                    $this->faker->sentence,
+                    $this->faker->sentence,
+                    $this->faker->sentence,
+                ]
+            ]
+        ];
 
-        // Not binding city for this test - should thus fail!
-        //        $container->bind(City::class, function($container, $parameters){
-        //            return new City($parameters);
-        //        });
+        $person = new Person($personData);
+    }
+
+    /**
+     * @test
+     * @covers ::__set
+     *
+     * @covers ::resolveValue
+     * @covers ::resolveParameter
+     */
+    public function canResolveAndPopulateBoundAbstractInstances(){
+
+        // Bind the abstraction / interface
+        $this->getContainer()->bind(NotesInterface::class, function($app, $parameters){
+            //
+            // Please note that the parameters might NOT be
+            // used, if constructor has default values!
+            //
+            return new Notes($parameters);
+        });
 
         $personData = [
             'name' => $this->faker->name,
@@ -151,12 +189,79 @@ class NestedDataTransferObjectTest extends \Codeception\TestCase\Test
                     'name' => $this->faker->city,
                     'zipCode' => $this->faker->postcode
                 ]
+            ],
+
+            // Here, the interface is bound, thus this should
+            // not fail
+            'notes' => [
+                'notes' => [
+                    $this->faker->sentence,
+                    $this->faker->sentence,
+                    $this->faker->sentence,
+                ]
             ]
         ];
 
         $person = new Person($personData);
 
-        dd($person);
+        $this->assertSame($personData['notes']['notes'], $person->notes->getNotes(), 'Notes should be the same!?');
+    }
+
+    /**
+     * In this test, the given `badInstance` property is of the concrete type
+     * `BadUnpopulatableObject`, which does not inherit from `Populatable`
+     * interface and thus we do not know how to populate it and should fail!
+     *
+     * @test
+     * @covers ::__set
+     *
+     * @covers ::resolveValue
+     * @covers ::resolveParameter
+     * @covers ::resolveUnboundInstance
+     *
+     * @expectedException \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function failsResolvingConcreteUnpopulatableInstance(){
+        $personData = [
+            'badInstance' => [
+                'foo' => 'bar'
+            ]
+        ];
+
+        $person = new Person($personData);
+    }
+
+    /**
+     * In this test, we should be able to populate `Person`, with
+     * the `BadUnpopulatableObject`, when given as a concrete instance.
+     *
+     * <br />
+     *
+     * <b>WARNING</b>: You should avoid creating your DTOs without
+     * inheritance from the `Populatable` and `Arrayable` interfaces
+     * (minimum requirements).
+     *
+     * @see canPopulateWithNestedObjectInstance Similar test!
+     *
+     * @test
+     * @covers ::__set
+     *
+     * @covers ::resolveValue
+     * @covers ::resolveParameter
+     */
+    public function canPopulateWithConcreteBadInstance(){
+        $foo = $this->faker->word;
+
+        $badInstance = new BadUnpopulatableObject();
+        $badInstance->setFoo($foo);
+
+        $personData = [
+            'badInstance' => $badInstance
+        ];
+
+        $person = new Person($personData);
+
+        $this->assertSame($foo, $person->badInstance->getFoo(), 'Foor should had been set');
     }
 }
 
@@ -165,6 +270,9 @@ class NestedDataTransferObjectTest extends \Codeception\TestCase\Test
  *
  * @property string $name
  * @property Address $address
+ * @property NotesInterface $notes
+ *
+ * @property BadUnpopulatableObject $badInstance
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
@@ -176,6 +284,16 @@ class Person extends DataTransferObject {
      * @var Address
      */
     protected $address = null;
+
+    /**
+     * @var NotesInterface
+     */
+    protected $notes = null;
+
+    /**
+     * @var BadUnpopulatableObject
+     */
+    protected $badInstance = null;
 
     /**
      * @return string
@@ -203,6 +321,34 @@ class Person extends DataTransferObject {
      */
     public function setAddress(Address $address) {
         $this->address = $address;
+    }
+
+    /**
+     * @return NotesInterface
+     */
+    public function getNotes() {
+        return $this->notes;
+    }
+
+    /**
+     * @param NotesInterface $notes
+     */
+    public function setNotes(NotesInterface $notes) {
+        $this->notes = $notes;
+    }
+
+    /**
+     * @return BadUnpopulatableObject
+     */
+    public function getBadInstance() {
+        return $this->badInstance;
+    }
+
+    /**
+     * @param BadUnpopulatableObject $badInstance
+     */
+    public function setBadInstance(BadUnpopulatableObject $badInstance) {
+        $this->badInstance = $badInstance;
     }
 
 }
@@ -296,4 +442,82 @@ class City extends DataTransferObject {
         $this->zipCode = $zipCode;
     }
 
+}
+
+/**
+ * Interface NotesInterface
+ *
+ * @author Alin Eugen Deac <aedart@gmail.com>
+ */
+interface NotesInterface {
+
+    /**
+     * @param string[] $notes
+     */
+    public function setNotes(array $notes);
+
+    /**
+     * @return string[]
+     */
+    public function getNotes();
+}
+
+/**
+ * Class Notes
+ *
+ * @property string[] $notes
+ *
+ * @author Alin Eugen Deac <aedart@gmail.com>
+ */
+class Notes extends DataTransferObject implements NotesInterface {
+
+    /**
+     * @var string[]
+     */
+    protected $notes = [];
+
+    /**
+     * @param string[] $notes
+     */
+    public function setNotes(array $notes) {
+        $this->notes = $notes;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getNotes() {
+        return $this->notes;
+    }
+}
+
+/**
+ * Class BadUnpopulatableObject
+ *
+ * WARNING: This class does not inherit from populatable,
+ * and therefore the DTO should fail, when attempting to
+ * populate it!
+ *
+ * @author Alin Eugen Deac <aedart@gmail.com>
+ */
+class BadUnpopulatableObject {
+
+    /**
+     * @var string
+     */
+    protected $foo = '';
+
+    /**
+     * @return string
+     */
+    public function getFoo() {
+        return $this->foo;
+    }
+
+    /**
+     * @param string $foo
+     */
+    public function setFoo($foo) {
+        $this->foo = $foo;
+    }
 }

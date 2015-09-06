@@ -2,9 +2,12 @@
 
 use Aedart\DTO\Contracts\DataTransferObject as DataTransferObjectInterface;
 use Aedart\Overload\Traits\PropertyOverloadTrait;
+use Aedart\Util\Interfaces\Populatable;
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Facades\App;
 use ReflectionClass;
+use ReflectionParameter;
 
 /**
  * Abstract Data Transfer Object
@@ -60,48 +63,6 @@ abstract class DataTransferObject implements DataTransferObjectInterface {
         return $this->ioc;
     }
 
-    protected function resolveFromContainer(ReflectionClass $reflection, $value){
-        $className = $reflection->getName();
-
-        // If the value corresponds to the given expected class,
-        // then there is no need to resolve anything from the
-        // IoC service container.
-        if($value instanceof $className){
-            return $value;
-        }
-
-        // TODO: Default container so powerfull that it will attempt to
-        // TODO: create instance of class - yet fails to populate...
-        // TODO: This is by far the safest option...
-        if(!$this->container()->bound($className)){
-            throw new \Exception('SHOULD FAIL!');
-        }
-
-        return $this->container()->make($className, $value);
-
-        // TODO: The problem; Container::getConcrete()
-
-        // If we don't have a registered resolver or concrete for the type, we'll just
-        // assume each type is a concrete name and will attempt to resolve it as is
-        // since the container should be able to resolve concretes automatically.
-
-        // TODO: Perhaps play a bit with populatable interface... or maybe Data Transfer Object Interface
-    }
-
-    protected function resolveValue($getterMethodName, $value){
-        $reflection = new ReflectionClass($this);
-
-        $method = $reflection->getMethod($getterMethodName);
-
-        $parameter = $method->getParameters()[0];
-
-        if($propertyReflectionClass = $parameter->getClass()){
-            return $this->resolveFromContainer($propertyReflectionClass, $value);
-        }
-
-        return $value;
-    }
-
     public function __set($name, $value) {
 
         $resolvedValue = $value;
@@ -112,6 +73,89 @@ abstract class DataTransferObject implements DataTransferObjectInterface {
         }
 
         $this->__setFromTrait($name, $resolvedValue);
+    }
+
+    protected function resolveValue($getterMethodName, $value){
+        $reflection = new ReflectionClass($this);
+
+        $method = $reflection->getMethod($getterMethodName);
+
+        $parameter = $method->getParameters()[0];
+
+        return $this->resolveParameter($parameter, $value);
+    }
+
+    protected function resolveParameter(ReflectionParameter $parameter, $value){
+
+        // If there is no class for the given parameter
+        // then some kind of primitive data has been provided
+        // and thus we need only to return it.
+        if(is_null($parameter->getClass())){
+            return $value;
+        }
+
+        $className = $parameter->getClass()->getName();
+
+        // If the value corresponds to the given expected class,
+        // then there is no need to resolve anything from the
+        // IoC service container.
+        if($value instanceof $className){
+            return $value;
+        }
+
+        $container = $this->container();
+
+        // Get the resolved instance for the IoC container
+        $instance = $container->make($className, $value);
+
+        // At this point, we could return the resolved instance. Yet,
+        // if the resolved instance was a "concrete" class, it means
+        // that it's properties / constructor's arguments might not
+        // have been resolved correctly. This can happen if the given
+        // instance's constructor accepts arguments, but contain
+        // default values, in which case the default Laravel container
+        // will result to using those default values, instead of
+        // the ones provided. This is not a mistake, but rather a very
+        // clever way of dealing with such issues.
+        //
+        // For further reference, please review the default container
+        // method `resolveNonClass`, in \Illuminate\Container\Container
+        //
+        // In our case, if an instance of this abstraction has been
+        // resolved, then its default constructor values are used, which
+        // causes empty objects. Therefore, the way that we deal with
+        // this, if by checking if the given class was `bound` in the
+        // service container. If not, then we attempt to handle this
+        // by checking if its an instance of something we can populate.
+        if(!$this->container()->bound($className)){
+            return $this->resolveUnboundInstance($instance, $parameter, $value);
+        }
+
+        return $instance;
+    }
+
+    protected function resolveUnboundInstance($instance, ReflectionParameter $parameter, $value){
+
+        // Check if instance is populatable and if the given value
+        // is an array.
+        if($instance instanceof Populatable && is_array($value)){
+            $instance->populate($value);
+
+            return $instance;
+        }
+
+        // If we reach this part, then we are simply going to fail.
+        // It is NOT safe to continue and make assumptions on how
+        // we can populate the given instance. For this reason, we
+        // just throw an exception
+        $message = sprintf(
+            'Unable to resolve dependency for property "%s" of the type "%s"; do not know how to populate with "%s"',
+            $parameter->getName(),
+            $parameter->getClass()->getName(),
+            var_export($value, true)
+        );
+
+        throw new BindingResolutionException($message);
     }
 
     public function populatableProperties(){
