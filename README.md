@@ -79,7 +79,7 @@ interface PersonInterface extends DataTransferObjectInterface {
 
 ### Concrete implementation of your DTO ###
 
-Create a concrete instance of your interface.
+Create a concrete implementation of your interface. Let it extend the default `DataTransferObject` abstraction.
  
 ```
 #!php
@@ -150,7 +150,7 @@ $person = new Person();
 // Name can be set using normal setter methods
 $person->setName('John');
 
-// But you can also just invoke the property itself
+// But you can also just set the property itself
 $person->name = 'Jack' // Will automatically invoke setName()
 
 // And you can also set it, using an array-accessor
@@ -165,7 +165,7 @@ $age = $person->getAge();
 $age = $person->age; // Will automatically invoke getAge()
 
 // Lastly, it can also be access via an array-accessor
-$age = $person['age'];
+$age = $person['age']; // Also invokes the getAge()
 
 ```
 
@@ -205,6 +205,56 @@ $data = [
 $person = new Person($data); // invokes populate(...), which then invokes the setter methods
 
 ```
+
+### Export properties to array ###
+
+Each DTO can be exported to an array.
+
+```
+#!php
+<?php
+
+// Provided that you have a populated instance, you can export those properties to an array 
+$properties = $person->toArray();
+
+var_dump($properties);  // Will output a "property-name => value" list
+                        // Example:
+                        //  [
+                        //      'name'  => 'Timmy'
+                        //      'age'   => 16
+                        //  ]
+
+```
+
+### Serialize to Json ###
+
+All DTOs are Json serializable, meaning that they inherit from the [`JsonSerializable`](http://php.net/manual/en/class.jsonserializable.php) interface.
+This means that when using `json_encode()`, the DTO automatically ensures that its properties are serializable by the encoding method.
+
+```
+#!php
+<?php
+
+$person = new Person([
+    'name' => 'Rian Dou',
+    'age' => 29
+]);
+
+echo json_encode($person);
+
+```
+
+The above example will output the following;
+
+```
+#!json
+{
+    "name":"Rian Dou",
+    "age":29
+}
+```
+
+
 
 ## Acknowledgement ##
 
