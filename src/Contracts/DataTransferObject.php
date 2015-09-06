@@ -49,6 +49,7 @@ use JsonSerializable;
  * @see https://en.wikipedia.org/wiki/Data_transfer_object
  * @see https://en.wikipedia.org/wiki/Mutator_method
  * @see http://php.net/manual/en/language.oop5.overloading.php
+ * @see http://php.net/manual/en/class.arrayaccess.php
  * @see https://en.wikipedia.org/wiki/Inversion_of_control
  * @see http://laravel.com/docs/5.1/container
  * @see PropertyOverloadable
