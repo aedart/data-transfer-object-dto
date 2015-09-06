@@ -553,6 +553,10 @@ As soon as I receive the pull-request (_and have time for it_), I will review yo
 * [Taylor Otwell](https://github.com/taylorotwell), for creating [Laravel](http://laravel.com) and especially the [Service Container](http://laravel.com/docs/5.1/container), that I'm using daily
 * [Jeffrey Way](https://github.com/JeffreyWay), for creating [Laracasts](https://laracasts.com/) - a great place to learn new things... And where I finally understood some of the principles of IoC!
 
+## Versioning ##
+
+This package uses [Semantic Versioning 2.0.0](http://semver.org/)
+
 ## License ##
 
 [BSD-3-Clause](http://spdx.org/licenses/BSD-3-Clause), Read the LICENSE file included in this package
