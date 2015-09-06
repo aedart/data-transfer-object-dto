@@ -129,6 +129,32 @@ class NestedDataTransferObjectTest extends \Codeception\TestCase\Test
 
     /**
      * @test
+     * @covers ::__set
+     *
+     * @covers ::resolveValue
+     * @covers ::resolveParameter
+     *
+     * @expectedException \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function failWhenNoServiceContainerIsAvailable(){
+        Bootstrap::destroy();
+
+        $personData = [
+            'name' => $this->faker->name,
+            'address'   => [
+                'street' => $this->faker->streetName,
+                'city' => [
+                    'name' => $this->faker->city,
+                    'zipCode' => $this->faker->postcode
+                ]
+            ]
+        ];
+
+        $person = new Person($personData);
+    }
+
+    /**
+     * @test
      *
      * @covers ::__set
      *

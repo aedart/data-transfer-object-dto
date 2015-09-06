@@ -10,9 +10,17 @@ use ReflectionClass;
 use ReflectionParameter;
 
 /**
- * Abstract Data Transfer Object
+ * <h1>Abstract Data Transfer Object</h1>
  *
- * TODO: what does this abstraction deliver
+ * This DTO abstraction offers default implementation of the following;
+ *
+ * <ul>
+ *      <li>Overloading of properties, if they have getters and setters defined</li>
+ *      <li>Population of properties via array</li>
+ *      <li>Resolving nested dependencies, via a IoC service container, if one is available</li>
+ *      <li>Exportation of properties to an array</li>
+ *      <li>Serialization of properties to json</li>
+ * </ul>
  *
  * @see \Aedart\DTO\Contracts\DataTransferObject
  *
@@ -75,16 +83,36 @@ abstract class DataTransferObject implements DataTransferObjectInterface {
         $this->__setFromTrait($name, $resolvedValue);
     }
 
-    protected function resolveValue($getterMethodName, $value){
+    /**
+     * Resolve and return the given value, for the given setter method
+     *
+     * @param string $setterMethodName The setter method to be invoked
+     * @param mixed $value The value to be passed to the setter method
+     *
+     * @return mixed
+     */
+    protected function resolveValue($setterMethodName, $value){
         $reflection = new ReflectionClass($this);
 
-        $method = $reflection->getMethod($getterMethodName);
+        $method = $reflection->getMethod($setterMethodName);
 
         $parameter = $method->getParameters()[0];
 
         return $this->resolveParameter($parameter, $value);
     }
 
+    /**
+     * Resolve the given parameter; pass the given value to it
+     *
+     * @param ReflectionParameter $parameter The setter method's parameter reflection
+     * @param mixed $value The value to be passed to the setter method
+     *
+     * @return mixed
+     * @throws BindingResolutionException   a) If no concrete instance could be resolved from the IoC, or
+     *                                      b) If the instance is not populatable and or the given value is not an
+     *                                      array that can be passed to the populatable instance
+     *                                      c) No service container is available
+     */
     protected function resolveParameter(ReflectionParameter $parameter, $value){
 
         // If there is no class for the given parameter
@@ -104,6 +132,17 @@ abstract class DataTransferObject implements DataTransferObjectInterface {
         }
 
         $container = $this->container();
+
+        // Fail if no service container is available
+        if(is_null($container)){
+            $message = sprintf(
+                'No IoC service container is available, cannot resolve property "%s" of the type "%s"; do not know how to populate with "%s"',
+                $parameter->getName(),
+                $className,
+                var_export($value, true)
+            );
+            throw new BindingResolutionException($message);
+        }
 
         // Get the resolved instance for the IoC container
         $instance = $container->make($className, $value);
@@ -134,6 +173,18 @@ abstract class DataTransferObject implements DataTransferObjectInterface {
         return $instance;
     }
 
+    /**
+     * Resolve an unbund instance - attempt to populate the given instance with the
+     * specified value
+     *
+     * @param object $instance The instance that must be populated
+     * @param ReflectionParameter $parameter Setter method's parameter reflection that requires the given instance
+     * @param mixed $value The value to be passed to the setter method
+     *
+     * @return mixed
+     * @throws BindingResolutionException If the instance is not populatable and or the given value is not an
+     *                                      array that can be passed to the populatable instance
+     */
     protected function resolveUnboundInstance($instance, ReflectionParameter $parameter, $value){
 
         // Check if instance is populatable and if the given value
