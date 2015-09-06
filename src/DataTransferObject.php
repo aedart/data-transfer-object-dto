@@ -16,6 +16,7 @@ use ReflectionParameter;
  *
  * <ul>
  *      <li>Overloading of properties, if they have getters and setters defined</li>
+ *      <li>Array-accessibility of properties, if properties have getters and setters defined</li>
  *      <li>Population of properties via array</li>
  *      <li>Resolving nested dependencies, via a IoC service container, if one is available</li>
  *      <li>Exportation of properties to an array</li>
