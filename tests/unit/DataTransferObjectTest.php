@@ -224,10 +224,8 @@ class DataTransferObjectTest extends \Codeception\TestCase\Test
         ];
 
         $dto = new DummyDto($data);
-
-        $serializableData = $dto->jsonSerialize();
-
-        $serialised = json_encode($serializableData);
+        
+        $serialised = json_encode($dto);
 
         $this->assertNotFalse($serialised, 'Could not serialise to json');
         $this->assertJson($serialised, 'Serialised data is NOT json');
