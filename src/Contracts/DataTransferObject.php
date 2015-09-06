@@ -52,6 +52,7 @@ use JsonSerializable;
  * @see http://php.net/manual/en/class.arrayaccess.php
  * @see https://en.wikipedia.org/wiki/Inversion_of_control
  * @see http://laravel.com/docs/5.1/container
+ * @see http://php.net/manual/en/class.jsonserializable.php
  * @see PropertyOverloadable
  *
  * @author Alin Eugen Deac <aedart@gmail.com>

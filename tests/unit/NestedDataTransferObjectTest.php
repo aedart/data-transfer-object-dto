@@ -172,7 +172,7 @@ class NestedDataTransferObjectTest extends \Codeception\TestCase\Test
         $person = new Person($personData);
 
         $serialized = json_encode($person);
-        
+
         $this->assertJson($serialized, 'Could not serialise nested instances');
     }
 
