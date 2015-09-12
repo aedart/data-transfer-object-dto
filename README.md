@@ -194,7 +194,7 @@ $data = [
 
 // Create instance and invoke populate
 $person = new Person();
-$person->populate($data); // setName() and setAge() is invoked with the given values
+$person->populate($data); // setName() and setAge() are invoked with the given values
 
 ```
 
@@ -282,13 +282,13 @@ echo $person->toJson() // The same as invoking json_encode($person);
 
 ### Inversion of Control (IoC) / Dependency Injection ###
 
-In this interpretation of the DTO, each instance must hold a reference to an [IoC service container](http://laravel.com/docs/5.1/container).
+In this interpretation of the DTO design pattern, each instance must hold a reference to an [IoC service container](http://laravel.com/docs/5.1/container).
 
 If you do not know what this means or how this works, please start off by reading the [wiki-article](https://en.wikipedia.org/wiki/Inversion_of_control) about it.
 
 #### Bootstrapping a service container ####
 
-If you are using this package inside a [Laravel](http://laravel.com/) application, then you can skip this part; it is NOT needed!
+If you are using this package inside a [Laravel](http://laravel.com/) application, then you can skip this part; **it is NOT needed!**
 
 ```
 #!php
@@ -310,16 +310,16 @@ _NOTE_: This example will only work if;
 
 a) You are using the DTO inside a [Laravel](http://laravel.com/) application
 
-or
+*or*
 
-b) You have invoked the `Bootstrap::boot()` method, before using the given DTO (...again, not needed if you are using this inside a Laravel application)
+b) You have invoked the `Bootstrap::boot()` method, before using the given DTO (*...once again this is not needed, if you are using this package inside a Laravel application*)
 
 ```
 #!php
 <?php
 use Aedart\DTO\DataTransferObject;
 
-// None-interfaced class is on purpose for this example
+// None-interfaced DTO class is on purpose for this example
 class Address extends DataTransferObject{
 
     protected $street = ''
@@ -393,7 +393,7 @@ $person = new Person($data);    // Will automatically resolve (if possible) $add
 
 In the above example, [Laravel's Service Container](http://laravel.com/docs/5.1/container) attempts to find and create any concrete instances that are expected.
 
-Furthermore, the default DTO abstraction (`\Aedart\DTO\DataTransferObject`) will attempt to automatically populate that instance.
+Furthermore, the default DTO abstraction (`Aedart\DTO\DataTransferObject`) will attempt to automatically populate that instance.
 
 ### Interface bindings ###
 
@@ -530,7 +530,7 @@ on how you can help this project. In any case, I thank you for taking the time t
 
 ### Bug Report ###
 
-If you are convinced that you have found a bug, at the very least you should create a new issue. In that given issue, you should as a minimum describe the following;
+If you are convinced that you have found a bug, then at the very least you should create a new issue. In that given issue, you should as a minimum describe the following;
 
 * Where is the defect located
 * A good, short and precise description of the defect (Why is it a defect)
