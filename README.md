@@ -172,7 +172,7 @@ $age = $person['age']; // Also invokes the getAge()
 
 ```
 
-#### Tip: PHPDoc's @property ####
+#### Tip: PHPDoc's property-tag ####
 
 If you are using a modern [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment), then it will most likely support [PHPDoc](http://www.phpdoc.org/).
 
