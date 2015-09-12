@@ -172,6 +172,12 @@ $age = $person['age']; // Also invokes the getAge()
 
 ```
 
+#### Tip: PHPDoc's @property ####
+
+If you are using a modern [IDE](https://en.wikipedia.org/wiki/Integrated_development_environment), then it will most likely support [PHPDoc](http://www.phpdoc.org/).
+
+By adding a [`@property`](http://www.phpdoc.org/docs/latest/references/phpdoc/tags/property.html) tag to your interface or concrete implementation, your IDE will be able to auto-complete the overloadable properties.
+
 ### Populating via an array ###
 
 You can populate your DTO using an array.
