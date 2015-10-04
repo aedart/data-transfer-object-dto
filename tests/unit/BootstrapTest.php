@@ -1,6 +1,5 @@
 <?php
 
-use \Exception;
 use \Mockery as m;
 use Aedart\DTO\DataTransferObject;
 use Aedart\DTO\Providers\Bootstrap;
