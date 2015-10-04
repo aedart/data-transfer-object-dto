@@ -2,7 +2,6 @@
 
 use Aedart\DTO\DataTransferObject;
 use Codeception\Util\Debug;
-use \Exception;
 use Faker\Factory;
 
 /**
