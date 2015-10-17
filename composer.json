@@ -6,7 +6,7 @@
     "DTO",
     "Design Pattern"
   ],
-  "homepage": "https://bitbucket.org/aedart/data-transfer-object-dto",
+  "homepage": "https://github.com/aedart/data-transfer-object-dto",
   "license": "BSD-3-Clause",
   "type": "library",
   "authors": [
@@ -17,14 +17,14 @@
   ],
   "require": {
     "php": ">=5.6.13",
-    "aedart/overload": "~1.3",
-    "aedart/util": "~1.2",
+    "aedart/overload": "~1.5",
+    "aedart/util": "~1.4",
     "illuminate/container": "~5.1",
     "illuminate/support": "~5.1"
   },
   "require-dev": {
     "aedart/license": "1.*",
-    "aedart/license-file-manager": "1.*",
+    "aedart/license-file-manager": "~1.4",
     "codeception/codeception": "~2.1",
     "symfony/var-dumper": "~2.7",
     "fzaninotto/faker": "~1.5",
