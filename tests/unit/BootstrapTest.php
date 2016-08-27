@@ -14,21 +14,8 @@ use Illuminate\Support\Facades\App;
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
-class BootstrapTest extends \Codeception\TestCase\Test
+class BootstrapTest extends UnitTestCase
 {
-    /**
-     * @var \UnitTester
-     */
-    protected $tester;
-
-    protected function _before()
-    {
-    }
-
-    protected function _after()
-    {
-        m::close();
-    }
 
     /***************************************************************
      * Utilities and helpers

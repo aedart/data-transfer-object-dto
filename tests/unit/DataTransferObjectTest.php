@@ -12,26 +12,8 @@ use Faker\Factory;
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
-class DataTransferObjectTest extends \Codeception\TestCase\Test
+class DataTransferObjectTest extends UnitTestCase
 {
-    /**
-     * @var \UnitTester
-     */
-    protected $tester;
-
-    /**
-     * @var \Faker\Generator
-     */
-    protected $faker = null;
-
-    protected function _before()
-    {
-        $this->faker = Factory::create();
-    }
-
-    protected function _after()
-    {
-    }
 
     /***************************************************************
      * Utilities and helpers

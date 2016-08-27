@@ -12,21 +12,12 @@ use Faker\Factory;
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
-class NestedDataTransferObjectTest extends \Codeception\TestCase\Test
+class NestedDataTransferObjectTest extends UnitTestCase
 {
-    /**
-     * @var \UnitTester
-     */
-    protected $tester;
-
-    /**
-     * @var \Faker\Generator
-     */
-    protected $faker = null;
 
     protected function _before()
     {
-        $this->faker = Factory::create();
+        parent::_before();
 
         Bootstrap::boot();
     }
@@ -34,6 +25,8 @@ class NestedDataTransferObjectTest extends \Codeception\TestCase\Test
     protected function _after()
     {
         Bootstrap::destroy();
+
+        parent::_after();
     }
 
     /***************************************************************
