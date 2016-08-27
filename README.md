@@ -34,7 +34,6 @@ Nevertheless, using DTOs can / will increase complexity of your project. Therefo
 ## How to install
 
 ```console
-
 composer require aedart/dto
 ```
 
@@ -48,10 +47,10 @@ Start off by creating an interface for your DTO. Below is an example for a simpl
 
 ```php
 <?php
-use Aedart\DTO\Contracts\DataTransferObject as DataTransferObjectInterface
+use Aedart\DTO\Contracts\DataTransferObject as DataTransferObjectInterface;
 
-interface PersonInterface extends DataTransferObjectInterface {
-
+interface PersonInterface extends DataTransferObjectInterface
+{
     /**
      * Set the person's name
      *
@@ -80,7 +79,6 @@ interface PersonInterface extends DataTransferObjectInterface {
      */
     public function getAge();
 }
-
 ```
 
 ### Concrete implementation of your DTO
@@ -91,7 +89,8 @@ Create a concrete implementation of your interface. Let it extend the default `D
 <?php
 use Aedart\DTO\DataTransferObject;
 
-class Person extends DataTransferObject implements PersonInterface {
+class Person extends DataTransferObject implements PersonInterface
+{
  
     protected $name = '';
     
@@ -102,7 +101,8 @@ class Person extends DataTransferObject implements PersonInterface {
      *
      * @param string $name
      */
-    public function setName($name){
+    public function setName($name)
+    {
         $this->name = $name;
     }
     
@@ -111,7 +111,8 @@ class Person extends DataTransferObject implements PersonInterface {
      *
      * @return string
      */
-    public function getName(){
+    public function getName()
+    {
         return $this->name;
     }
     
@@ -120,7 +121,8 @@ class Person extends DataTransferObject implements PersonInterface {
      *
      * @param int $age
      */
-    public function setAge($age){
+    public function setAge($age)
+    {
         $this->age = $age;
     }
     
@@ -129,10 +131,11 @@ class Person extends DataTransferObject implements PersonInterface {
      *
      * @return int
      */
-    public function getAge(){
+    public function getAge()
+    {
         return $this->age;
     } 
- 
+
 }
 ```
 
@@ -155,10 +158,10 @@ $person = new Person();
 $person->setName('John');
 
 // But you can also just set the property itself
-$person->name = 'Jack' // Will automatically invoke setName()
+$person->name = 'Jack'; // Will automatically invoke setName()
 
 // And you can also set it, using an array-accessor
-$person['name'] = 'Jane' // Will also automatically invoke setName()
+$person['name'] = 'Jane'; // Will also automatically invoke setName()
 
 // ... //
 
@@ -170,7 +173,6 @@ $age = $person->age; // Will automatically invoke getAge()
 
 // Lastly, it can also be access via an array-accessor
 $age = $person['age']; // Also invokes the getAge()
-
 ```
 
 #### Tip: PHPDoc's property-tag
@@ -195,7 +197,6 @@ $data = [
 // Create instance and invoke populate
 $person = new Person();
 $person->populate($data); // setName() and setAge() are invoked with the given values
-
 ```
 
 If you are extending the default DTO abstraction, then you can also pass in an array in the constructor
@@ -211,7 +212,6 @@ $data = [
 
 // Create instance and invoke populate
 $person = new Person($data); // invokes populate(...), which then invokes the setter methods
-
 ```
 
 ### Export properties to array
@@ -230,7 +230,6 @@ var_dump($properties);  // Will output a "property-name => value" list
                         //      'name'  => 'Timmy'
                         //      'age'   => 16
                         //  ]
-
 ```
 
 ### Serialize to Json
@@ -247,13 +246,11 @@ $person = new Person([
 ]);
 
 echo json_encode($person);
-
 ```
 
 The above example will output the following;
 
-```
-#!json
+``` json
 {
     "name":"Rian Dou",
     "age":29
@@ -270,8 +267,7 @@ $person = new Person([
     'age' => 29
 ]);
 
-echo $person->toJson() // The same as invoking json_encode($person);
-
+echo $person->toJson(); // The same as invoking json_encode($person);
 ```
 
 ## Advanced usage
@@ -294,7 +290,6 @@ use Aedart\DTO\Providers\Bootstrap;
 // Invoke the bootstrap's boot method, before using any DTOs
 // Ideally, this should happen along side your application other bootstrapping logic
 Bootstrap::boot(); // A default service container is now available 
-
 ```
 
 ### Nested instances
@@ -314,16 +309,18 @@ b) You have invoked the `Bootstrap::boot()` method, before using the given DTO (
 use Aedart\DTO\DataTransferObject;
 
 // None-interfaced DTO class is on purpose for this example
-class Address extends DataTransferObject{
+class Address extends DataTransferObject
+{
 
-    protected $street = ''
+    protected $street = '';
 
     /**
      * Set the street
      *
      * @param string $street
      */
-    public function setStreet($street){
+    public function setStreet($street)
+    {
         $this->street = $street;
     }
     
@@ -332,13 +329,15 @@ class Address extends DataTransferObject{
      *
      * @return string
      */
-    public function getStreet(){
+    public function getStreet()
+    {
         return $this->street;
     }
 }
 
 // You Person DTO now accepts an address object
-class Person extends DataTransferObject implements PersonInterface {
+class Person extends DataTransferObject implements PersonInterface
+{
  
     protected $name = '';
     
@@ -353,7 +352,8 @@ class Person extends DataTransferObject implements PersonInterface {
       *
       * @param Address $address
       */
-     public function setAddress(Address $address){
+     public function setAddress(Address $address)
+     {
          $this->address = $address;
      }
      
@@ -362,7 +362,8 @@ class Person extends DataTransferObject implements PersonInterface {
       *
       * @return Address
       */
-     public function getAddress(){
+     public function getAddress()
+     {
          return $this->address;
      }
 }
@@ -382,7 +383,6 @@ $data = [
 
 $person = new Person($data);    // Will automatically resolve (if possible) $address, create an instance of
                                 // of the Address class, and populate it with the given street value
-
 ```
 
 In the above example, [Laravel's Service Container](http://laravel.com/docs/5.1/container) attempts to find and create any concrete instances that are expected.
@@ -411,7 +411,6 @@ Bootstrap::boot();
 Bootstrap::getContainer()->bind(CityInterface::class, function($app, $data){
     return new City($data); // Concrete implementation of the CityInterface - remember to pass in parameters!
 });
-
 ```
 
 _NOTE_: Here, you are responsible for populating the given concrete instance
@@ -429,7 +428,6 @@ Inside your application's [service provider](http://laravel.com/docs/5.1/provide
 $this->app->bind(CityInterface::class, function($app, $data){
     return new City($data); // Concrete implementation of the CityInterface - remember to pass in parameters!
 });
-
 ```
 
 _NOTE_: Here, you are responsible for populating the given concrete instance
@@ -440,12 +438,12 @@ Given that you have bound your interfaces to concrete instances, then the follow
 
 ```php
 <?php
-use Aedart\DTO\Contracts\DataTransferObject as DataTransferObjectInterface
+use Aedart\DTO\Contracts\DataTransferObject as DataTransferObjectInterface;
 use Aedart\DTO\DataTransferObject;
 
 // Interface for a City
-interface CityInterface extends DataTransferObjectInterface {
-
+interface CityInterface extends DataTransferObjectInterface
+{
     /**
      * Set the city's name
      *
@@ -459,21 +457,21 @@ interface CityInterface extends DataTransferObjectInterface {
      * @return string
      */
     public function getName();   
-
 }
 
 // Concrete implementation of City
-class City extends DataTransferObject implements CityInterface {
- 
+class City extends DataTransferObject implements CityInterface
+{
     protected $name = '';
     
     // ... getter and setter implementation not shown ... //
 }
 
 // Address class now also accepts a city property, of the type CityInterface
-class Address extends DataTransferObject{
+class Address extends DataTransferObject
+{
 
-    protected $street = ''
+    protected $street = '';
 
     protected $city = null;
 
@@ -484,7 +482,8 @@ class Address extends DataTransferObject{
       *
       * @param CityInterface $address
       */
-     public function setCity(CityInterface $city){
+     public function setCity(CityInterface $city)
+     {
          $this->city = $city;
      }
      
@@ -493,7 +492,8 @@ class Address extends DataTransferObject{
       *
       * @return CityInterface
       */
-     public function getCity(){
+     public function getCity()
+     {
          return $this->city;
      }
 }
@@ -511,7 +511,6 @@ $addressData = [
 $address = new Address($addressData);   // Will attempt to automatically resolve the expected city property,
                                         // of the CityInterface type, by creating a concrete City, using
                                         // the service container, and resolve the bound interface instance
-
 ```
 
 ## Contribution
@@ -552,7 +551,7 @@ As soon as I receive the pull-request (_and have time for it_), I will review yo
 
 ## Versioning
 
-This package uses [Semantic Versioning 2.0.0](http://semver.org/)
+This package follows [Semantic Versioning 2.0.0](http://semver.org/)
 
 ## License
 
