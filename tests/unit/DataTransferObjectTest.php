@@ -2,6 +2,7 @@
 
 use Aedart\DTO\DataTransferObject;
 use Codeception\Util\Debug;
+use Aedart\Testing\TestCases\Unit\UnitTestCase;
 
 /**
  * Class DataTransferObjectTest

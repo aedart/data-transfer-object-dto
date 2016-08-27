@@ -1,6 +1,7 @@
 <?php
 
 use Aedart\DTO\Providers\Bootstrap;
+use Aedart\Testing\TestCases\Unit\UnitTestCase;
 
 /**
  * Class NestedDataTransferObjectTest

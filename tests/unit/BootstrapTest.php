@@ -5,6 +5,7 @@ use Aedart\DTO\DataTransferObject;
 use Aedart\DTO\Providers\Bootstrap;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Facades\App;
+use Aedart\Testing\TestCases\Unit\UnitTestCase;
 
 /**
  * Class BootstrapTest
