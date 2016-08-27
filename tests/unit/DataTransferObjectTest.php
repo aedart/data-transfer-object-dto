@@ -2,7 +2,6 @@
 
 use Aedart\DTO\DataTransferObject;
 use Codeception\Util\Debug;
-use Faker\Factory;
 
 /**
  * Class DataTransferObjectTest
@@ -28,12 +27,13 @@ class DataTransferObjectTest extends UnitTestCase
      * @covers ::__construct
      * @covers ::populate
      */
-    public function canCreateInstanceWithoutArguments() {
+    public function canCreateInstanceWithoutArguments()
+    {
         try {
             $dto = new DummyDto();
 
             $this->assertTrue(true, 'Instance created');
-        } catch (Exception $e){
+        } catch (Exception $e) {
             $this->fail('Cannot create instance without arguments;' . PHP_EOL . $e);
         }
     }
@@ -43,7 +43,8 @@ class DataTransferObjectTest extends UnitTestCase
      * @covers ::__construct
      * @covers ::populate
      */
-    public function canCreateInstanceWithArguments(){
+    public function canCreateInstanceWithArguments()
+    {
         $data = [
             'age' => $this->faker->randomDigit
         ];
@@ -52,7 +53,7 @@ class DataTransferObjectTest extends UnitTestCase
             $dto = new DummyDto($data);
 
             $this->assertTrue(true, 'Instance created');
-        } catch (Exception $e){
+        } catch (Exception $e) {
             $this->fail('Cannot create instance with arguments;' . PHP_EOL . $e);
         }
     }
@@ -61,7 +62,8 @@ class DataTransferObjectTest extends UnitTestCase
      * @test
      * @covers ::populatableProperties
      */
-    public function canObtainPopulatableProperties(){
+    public function canObtainPopulatableProperties()
+    {
         $dto = new DummyDto();
 
         $populatableProperties = $dto->populatableProperties();
@@ -78,10 +80,11 @@ class DataTransferObjectTest extends UnitTestCase
      * @test
      * @covers ::populate
      */
-    public function hasPopulatedCorrectly(){
+    public function hasPopulatedCorrectly()
+    {
         $data = [
             'age' => $this->faker->randomDigit,
-            'name'  => $this->faker->name
+            'name' => $this->faker->name
         ];
 
         $dto = new DummyDto($data);
@@ -94,7 +97,8 @@ class DataTransferObjectTest extends UnitTestCase
      * @test
      * @covers ::offsetExists
      */
-    public function canDetermineIfOffsetExistsOrNot(){
+    public function canDetermineIfOffsetExistsOrNot()
+    {
         $dto = new DummyDto();
 
         $this->assertTrue(isset($dto['name']), 'Name exists');
@@ -106,10 +110,11 @@ class DataTransferObjectTest extends UnitTestCase
      * @test
      * @covers ::offsetGet
      */
-    public function canGetViaOffset(){
+    public function canGetViaOffset()
+    {
         $data = [
             'age' => $this->faker->randomDigit,
-            'name'  => $this->faker->name
+            'name' => $this->faker->name
         ];
 
         $dto = new DummyDto($data);
@@ -123,7 +128,8 @@ class DataTransferObjectTest extends UnitTestCase
      *
      * @expectedException \Aedart\Overload\Exception\UndefinedPropertyException
      */
-    public function failsWhenOffsetDoesNotExist(){
+    public function failsWhenOffsetDoesNotExist()
+    {
         $dto = new DummyDto();
 
         $something = $dto['offsetThatDoesNotExist'];
@@ -133,7 +139,8 @@ class DataTransferObjectTest extends UnitTestCase
      * @test
      * @covers ::offsetSet
      */
-    public function canSetViaOffset(){
+    public function canSetViaOffset()
+    {
         $dto = new DummyDto();
 
         $name = $this->faker->name;
@@ -149,7 +156,8 @@ class DataTransferObjectTest extends UnitTestCase
      *
      * @expectedException \Aedart\Overload\Exception\UndefinedPropertyException
      */
-    public function failsSettingViaOffsetAndPropertyDoesNotExist() {
+    public function failsSettingViaOffsetAndPropertyDoesNotExist()
+    {
         $dto = new DummyDto();
 
         $dto['offsetThatDoesNotExist'] = $this->faker->address;
@@ -159,10 +167,11 @@ class DataTransferObjectTest extends UnitTestCase
      * @test
      * @covers ::offsetUnset
      */
-    public function canUnsetViaOffset() {
+    public function canUnsetViaOffset()
+    {
         $data = [
             'age' => $this->faker->randomDigit,
-            'name'  => $this->faker->name
+            'name' => $this->faker->name
         ];
 
         $dto = new DummyDto($data);
@@ -177,10 +186,11 @@ class DataTransferObjectTest extends UnitTestCase
      * @covers ::offsetUnset
      * @covers ::offsetSet
      */
-    public function reassignValueToUnsetProperty(){
+    public function reassignValueToUnsetProperty()
+    {
         $data = [
             'age' => $this->faker->randomDigit,
-            'name'  => $this->faker->name
+            'name' => $this->faker->name
         ];
 
         $dto = new DummyDto($data);
@@ -198,10 +208,11 @@ class DataTransferObjectTest extends UnitTestCase
      * @test
      * @covers ::jsonSerialize
      */
-    public function returnsDataThatCanBeSerialisedToJson(){
+    public function returnsDataThatCanBeSerialisedToJson()
+    {
         $data = [
             'age' => $this->faker->randomDigit,
-            'name'  => $this->faker->name
+            'name' => $this->faker->name
         ];
 
         $dto = new DummyDto($data);
@@ -216,10 +227,11 @@ class DataTransferObjectTest extends UnitTestCase
      * @test
      * @covers ::toJson
      */
-    public function canSerialiseToJson() {
+    public function canSerialiseToJson()
+    {
         $data = [
             'age' => $this->faker->randomDigit,
-            'name'  => $this->faker->name
+            'name' => $this->faker->name
         ];
 
         $dto = new DummyDto($data);
@@ -231,10 +243,11 @@ class DataTransferObjectTest extends UnitTestCase
      * @test
      * @covers ::__toString
      */
-    public function canGetStringRepresentationOfDto(){
+    public function canGetStringRepresentationOfDto()
+    {
         $data = [
             'age' => $this->faker->randomDigit,
-            'name'  => $this->faker->name
+            'name' => $this->faker->name
         ];
 
         $dto = new DummyDto($data);
@@ -247,7 +260,8 @@ class DataTransferObjectTest extends UnitTestCase
      * @covers ::__debugInfo
      * @covers ::toArray
      */
-    public function debugInformationDoesNotContainSpecialProperty() {
+    public function debugInformationDoesNotContainSpecialProperty()
+    {
         $dto = new DummyDto();
 
         $debugInformation = $dto->__debugInfo();
@@ -264,10 +278,11 @@ class DataTransferObjectTest extends UnitTestCase
      * @covers ::__debugInfo
      * @covers ::toArray
      */
-    public function debugInformationDoesNotContainUnsetProperties() {
+    public function debugInformationDoesNotContainUnsetProperties()
+    {
         $data = [
             'age' => $this->faker->randomDigit,
-            'name'  => $this->faker->name
+            'name' => $this->faker->name
         ];
 
         $dto = new DummyDto($data);
@@ -294,7 +309,8 @@ class DataTransferObjectTest extends UnitTestCase
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
-class DummyDto extends DataTransferObject {
+class DummyDto extends DataTransferObject
+{
 
     protected $name = '';
 
@@ -303,28 +319,32 @@ class DummyDto extends DataTransferObject {
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @param string $name
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
     }
 
     /**
      * @return int
      */
-    public function getAge() {
+    public function getAge()
+    {
         return $this->age;
     }
 
     /**
      * @param int $age
      */
-    public function setAge($age) {
+    public function setAge($age)
+    {
         $this->age = $age;
     }
 

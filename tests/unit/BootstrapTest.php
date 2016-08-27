@@ -26,7 +26,8 @@ class BootstrapTest extends UnitTestCase
      *
      * @return m\MockInterface|DataTransferObject
      */
-    protected function getDtoMock(){
+    protected function getDtoMock()
+    {
         return m::mock(DataTransferObject::class)->makePartial();
     }
 
@@ -41,12 +42,13 @@ class BootstrapTest extends UnitTestCase
      * @covers ::getContainer
      * @covers ::getDefaultContainer
      */
-    public function canBoot() {
+    public function canBoot()
+    {
         try {
             Bootstrap::boot();
 
             $this->assertInstanceOf(Container::class, Bootstrap::getContainer());
-        } catch(Exception $e){
+        } catch (Exception $e) {
             $this->fail('Could not boot; ' . PHP_EOL . $e);
         }
     }
@@ -56,8 +58,10 @@ class BootstrapTest extends UnitTestCase
      *
      * @depends canBoot
      */
-    public function hasSetFacadeApplication(){
-        $this->assertInstanceOf(Container::class, App::getFacadeApplication(), 'App Facade should have a container set');
+    public function hasSetFacadeApplication()
+    {
+        $this->assertInstanceOf(Container::class, App::getFacadeApplication(),
+            'App Facade should have a container set');
     }
 
     /**
@@ -65,7 +69,8 @@ class BootstrapTest extends UnitTestCase
      *
      * @covers Aedart\DTO\DataTransferObject::container
      */
-    public function dtoHasContainerSet(){
+    public function dtoHasContainerSet()
+    {
         $dto = $this->getDtoMock();
 
         $this->assertInstanceOf(Container::class, $dto->container(), 'Invalid container on DTO');
@@ -78,10 +83,11 @@ class BootstrapTest extends UnitTestCase
      *
      * @depends hasSetFacadeApplication
      */
-    public function canDestroy(){
+    public function canDestroy()
+    {
         try {
             Bootstrap::destroy();
-        } catch(Exception $e){
+        } catch (Exception $e) {
             $this->fail('Could not destroy; ' . PHP_EOL . $e);
         }
     }
@@ -91,7 +97,8 @@ class BootstrapTest extends UnitTestCase
      *
      * @depends canDestroy
      */
-    public function hasUnsetFacadeApplication(){
+    public function hasUnsetFacadeApplication()
+    {
         $this->assertNull(App::getFacadeApplication(), 'Container / Application should be null');
     }
 
@@ -100,9 +107,10 @@ class BootstrapTest extends UnitTestCase
      *
      * @depends hasUnsetFacadeApplication
      *
-     * @covers Aedart\DTO\DataTransferObject::container
+     * @covers  Aedart\DTO\DataTransferObject::container
      */
-    public function dtoHasNoContainerSet(){
+    public function dtoHasNoContainerSet()
+    {
         $dto = $this->getDtoMock();
 
         $this->assertNull($dto->container(), 'No container should be available');

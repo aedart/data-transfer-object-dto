@@ -2,7 +2,6 @@
 
 use Aedart\DTO\DataTransferObject;
 use Aedart\DTO\Providers\Bootstrap;
-use Faker\Factory;
 
 /**
  * Class NestedDataTransferObjectTest
@@ -38,7 +37,8 @@ class NestedDataTransferObjectTest extends UnitTestCase
      *
      * @return \Illuminate\Contracts\Container\Container
      */
-    protected function getContainer(){
+    protected function getContainer()
+    {
         return Bootstrap::getContainer();
     }
 
@@ -50,7 +50,8 @@ class NestedDataTransferObjectTest extends UnitTestCase
      * @test
      * @covers ::__set
      */
-    public function canPopulatePropertyOfPrimitiveType(){
+    public function canPopulatePropertyOfPrimitiveType()
+    {
         $data = [
             'name' => $this->faker->name
         ];
@@ -67,7 +68,8 @@ class NestedDataTransferObjectTest extends UnitTestCase
      * @covers ::resolveValue
      * @covers ::resolveParameter
      */
-    public function canPopulateWithNestedObjectInstance(){
+    public function canPopulateWithNestedObjectInstance()
+    {
         $cityData = [
             'name' => $this->faker->city,
             'zipCode' => $this->faker->postcode
@@ -80,7 +82,7 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
         $personData = [
             'name' => $this->faker->name,
-            'address'   => new Address($addressData)
+            'address' => new Address($addressData)
         ];
 
         $person = new Person($personData);
@@ -101,10 +103,11 @@ class NestedDataTransferObjectTest extends UnitTestCase
      * @covers ::resolveParameter
      * @covers ::resolveUnboundInstance
      */
-    public function canResolveAndPopulateUnboundConcreteInstances() {
+    public function canResolveAndPopulateUnboundConcreteInstances()
+    {
         $personData = [
             'name' => $this->faker->name,
-            'address'   => [
+            'address' => [
                 'street' => $this->faker->streetName,
                 'city' => [
                     'name' => $this->faker->city,
@@ -117,7 +120,8 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
         $this->assertSame($personData['name'], $person->name, 'Name of person is invalid');
         $this->assertSame($personData['address']['street'], $person->address->street, 'Street should have been set');
-        $this->assertSame($personData['address']['city']['name'], $person->address->city->name, 'City name should have been set');
+        $this->assertSame($personData['address']['city']['name'], $person->address->city->name,
+            'City name should have been set');
     }
 
     /**
@@ -129,12 +133,13 @@ class NestedDataTransferObjectTest extends UnitTestCase
      *
      * @expectedException \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function failWhenNoServiceContainerIsAvailable(){
+    public function failWhenNoServiceContainerIsAvailable()
+    {
         Bootstrap::destroy();
 
         $personData = [
             'name' => $this->faker->name,
-            'address'   => [
+            'address' => [
                 'street' => $this->faker->streetName,
                 'city' => [
                     'name' => $this->faker->city,
@@ -150,10 +155,11 @@ class NestedDataTransferObjectTest extends UnitTestCase
      * @test
      * @covers ::jsonSerialize
      */
-    public function canSerialiseNestedInstances(){
+    public function canSerialiseNestedInstances()
+    {
         $personData = [
             'name' => $this->faker->name,
-            'address'   => [
+            'address' => [
                 'street' => $this->faker->streetName,
                 'city' => [
                     'name' => $this->faker->city,
@@ -178,7 +184,8 @@ class NestedDataTransferObjectTest extends UnitTestCase
      * @covers ::resolveParameter
      * @covers ::resolveUnboundInstance
      */
-    public function canResolveUsingOverloadMethodDirectly(){
+    public function canResolveUsingOverloadMethodDirectly()
+    {
         $person = new Person();
 
         $data = [
@@ -191,7 +198,8 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
         $person->address = $data;
 
-        $this->assertSame($data['city']['zipCode'], $person->address->city->zipCode, 'ZipCode was expected to be of a different value!');
+        $this->assertSame($data['city']['zipCode'], $person->address->city->zipCode,
+            'ZipCode was expected to be of a different value!');
     }
 
     /**
@@ -203,10 +211,11 @@ class NestedDataTransferObjectTest extends UnitTestCase
      *
      * @expectedException \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function failsPopulatingUnboundAbstractInstances(){
+    public function failsPopulatingUnboundAbstractInstances()
+    {
         $personData = [
             'name' => $this->faker->name,
-            'address'   => [
+            'address' => [
                 'street' => $this->faker->streetName,
                 'city' => [
                     'name' => $this->faker->city,
@@ -237,10 +246,11 @@ class NestedDataTransferObjectTest extends UnitTestCase
      * @covers ::resolveValue
      * @covers ::resolveParameter
      */
-    public function canResolveAndPopulateBoundAbstractInstances(){
+    public function canResolveAndPopulateBoundAbstractInstances()
+    {
 
         // Bind the abstraction / interface
-        $this->getContainer()->bind(NotesInterface::class, function($app, $parameters){
+        $this->getContainer()->bind(NotesInterface::class, function ($app, $parameters) {
             //
             // Please note that the parameters might NOT be
             // used, if constructor has default values!
@@ -250,7 +260,7 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
         $personData = [
             'name' => $this->faker->name,
-            'address'   => [
+            'address' => [
                 'street' => $this->faker->streetName,
                 'city' => [
                     'name' => $this->faker->city,
@@ -288,7 +298,8 @@ class NestedDataTransferObjectTest extends UnitTestCase
      *
      * @expectedException \Illuminate\Contracts\Container\BindingResolutionException
      */
-    public function failsResolvingConcreteUnpopulatableInstance(){
+    public function failsResolvingConcreteUnpopulatableInstance()
+    {
         $personData = [
             'badInstance' => [
                 'foo' => 'bar'
@@ -316,7 +327,8 @@ class NestedDataTransferObjectTest extends UnitTestCase
      * @covers ::resolveValue
      * @covers ::resolveParameter
      */
-    public function canPopulateWithConcreteBadInstance(){
+    public function canPopulateWithConcreteBadInstance()
+    {
         $foo = $this->faker->word;
 
         $badInstance = new BadUnpopulatableObject();
@@ -343,7 +355,8 @@ class NestedDataTransferObjectTest extends UnitTestCase
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
-class Person extends DataTransferObject {
+class Person extends DataTransferObject
+{
 
     protected $name = '';
 
@@ -365,56 +378,64 @@ class Person extends DataTransferObject {
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @param string $name
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
     }
 
     /**
      * @return Address
      */
-    public function getAddress() {
+    public function getAddress()
+    {
         return $this->address;
     }
 
     /**
      * @param Address $address
      */
-    public function setAddress(Address $address) {
+    public function setAddress(Address $address)
+    {
         $this->address = $address;
     }
 
     /**
      * @return NotesInterface
      */
-    public function getNotes() {
+    public function getNotes()
+    {
         return $this->notes;
     }
 
     /**
      * @param NotesInterface $notes
      */
-    public function setNotes(NotesInterface $notes) {
+    public function setNotes(NotesInterface $notes)
+    {
         $this->notes = $notes;
     }
 
     /**
      * @return BadUnpopulatableObject
      */
-    public function getBadInstance() {
+    public function getBadInstance()
+    {
         return $this->badInstance;
     }
 
     /**
      * @param BadUnpopulatableObject $badInstance
      */
-    public function setBadInstance(BadUnpopulatableObject $badInstance) {
+    public function setBadInstance(BadUnpopulatableObject $badInstance)
+    {
         $this->badInstance = $badInstance;
     }
 
@@ -428,7 +449,8 @@ class Person extends DataTransferObject {
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
-class Address extends DataTransferObject {
+class Address extends DataTransferObject
+{
 
     protected $street = '';
 
@@ -440,28 +462,32 @@ class Address extends DataTransferObject {
     /**
      * @return string
      */
-    public function getStreet() {
+    public function getStreet()
+    {
         return $this->street;
     }
 
     /**
      * @param string $street
      */
-    public function setStreet($street) {
+    public function setStreet($street)
+    {
         $this->street = $street;
     }
 
     /**
      * @return City
      */
-    public function getCity() {
+    public function getCity()
+    {
         return $this->city;
     }
 
     /**
      * @param City $city
      */
-    public function setCity(City $city) {
+    public function setCity(City $city)
+    {
         $this->city = $city;
     }
 
@@ -475,7 +501,8 @@ class Address extends DataTransferObject {
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
-class City extends DataTransferObject {
+class City extends DataTransferObject
+{
 
     protected $name = '';
 
@@ -484,28 +511,32 @@ class City extends DataTransferObject {
     /**
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
     /**
      * @param string $name
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
     }
 
     /**
      * @return int
      */
-    public function getZipCode() {
+    public function getZipCode()
+    {
         return $this->zipCode;
     }
 
     /**
      * @param int $zipCode
      */
-    public function setZipCode($zipCode) {
+    public function setZipCode($zipCode)
+    {
         $this->zipCode = $zipCode;
     }
 
@@ -516,7 +547,8 @@ class City extends DataTransferObject {
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
-interface NotesInterface {
+interface NotesInterface
+{
 
     /**
      * @param string[] $notes
@@ -536,7 +568,8 @@ interface NotesInterface {
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
-class Notes extends DataTransferObject implements NotesInterface {
+class Notes extends DataTransferObject implements NotesInterface
+{
 
     /**
      * @var string[]
@@ -546,14 +579,16 @@ class Notes extends DataTransferObject implements NotesInterface {
     /**
      * @param string[] $notes
      */
-    public function setNotes(array $notes) {
+    public function setNotes(array $notes)
+    {
         $this->notes = $notes;
     }
 
     /**
      * @return string[]
      */
-    public function getNotes() {
+    public function getNotes()
+    {
         return $this->notes;
     }
 }
@@ -567,7 +602,8 @@ class Notes extends DataTransferObject implements NotesInterface {
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
-class BadUnpopulatableObject {
+class BadUnpopulatableObject
+{
 
     /**
      * @var string
@@ -577,14 +613,16 @@ class BadUnpopulatableObject {
     /**
      * @return string
      */
-    public function getFoo() {
+    public function getFoo()
+    {
         return $this->foo;
     }
 
     /**
      * @param string $foo
      */
-    public function setFoo($foo) {
+    public function setFoo($foo)
+    {
         $this->foo = $foo;
     }
 }
