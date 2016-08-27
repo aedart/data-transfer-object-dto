@@ -23,7 +23,8 @@ use Illuminate\Support\Facades\App;
  * @author Alin Eugen Deac <aedart@gmail.com>
  * @package Aedart\DTO\Providers
  */
-class Bootstrap {
+class Bootstrap
+{
 
     /**
      * The IoC Service
@@ -35,7 +36,8 @@ class Bootstrap {
     /**
      * Boots the Inversion of Control (IoC) Container
      */
-    public static function boot(){
+    public static function boot()
+    {
         $container = self::getContainer();
 
         App::setFacadeApplication($container);
@@ -46,7 +48,8 @@ class Bootstrap {
     /**
      * Destroy the Inversion of Control (IoC) Container
      */
-    public static function destroy(){
+    public static function destroy()
+    {
         App::clearResolvedInstances();
 
         App::setFacadeApplication(null);
@@ -64,8 +67,9 @@ class Bootstrap {
      *
      * @return \Illuminate\Contracts\Container\Container
      */
-    public static function getContainer() {
-        if(is_null(self::$container)){
+    public static function getContainer()
+    {
+        if (is_null(self::$container)) {
             self::setContainer(self::getDefaultContainer());
         }
 
@@ -80,7 +84,8 @@ class Bootstrap {
      *
      * @param \Illuminate\Contracts\Container\Container $container [optional]
      */
-    public static function setContainer(ContainerInterface $container = null) {
+    public static function setContainer(ContainerInterface $container = null)
+    {
         self::$container = $container;
     }
 
@@ -89,7 +94,8 @@ class Bootstrap {
      *
      * @return \Illuminate\Contracts\Container\Container
      */
-    public static function getDefaultContainer(){
+    public static function getDefaultContainer()
+    {
         return new Container();
     }
 }
