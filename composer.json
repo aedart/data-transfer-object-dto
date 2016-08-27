@@ -16,19 +16,17 @@
     }
   ],
   "require": {
-    "php": ">=5.6.13",
-    "aedart/overload": "~1.5",
-    "aedart/util": "~1.4",
-    "illuminate/container": "5.2.*",
-    "illuminate/support": "5.2.*"
+    "php": ">=5.6.4",
+    "aedart/overload": "~2.0",
+    "aedart/util": "~2.0",
+    "illuminate/container": "5.3.*",
+    "illuminate/support": "5.3.*"
   },
   "require-dev": {
     "aedart/license": "1.*",
     "aedart/license-file-manager": "~1.7",
-    "codeception/codeception": "~2.1",
-    "symfony/var-dumper": "~2.7",
-    "fzaninotto/faker": "~1.5",
-    "mockery/mockery": "~0.9"
+    "aedart/testing": "~1.0",
+    "symfony/var-dumper": "3.1.*"
   },
   "autoload": {
     "psr-4": {
