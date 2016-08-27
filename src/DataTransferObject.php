@@ -237,12 +237,8 @@ abstract class DataTransferObject implements DataTransferObjectInterface
         return $output;
     }
 
-    public function populate(array $data)
+    public function populate(array $data = [])
     {
-        if (empty($data)) {
-            return;
-        }
-
         foreach ($data as $name => $value) {
             $this->__set($name, $value);
         }
