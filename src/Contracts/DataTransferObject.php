@@ -1,6 +1,5 @@
 <?php namespace Aedart\DTO\Contracts;
 
-use Aedart\Overload\Interfaces\PropertyOverloadable;
 use Aedart\Util\Interfaces\Populatable;
 use ArrayAccess;
 use Illuminate\Contracts\Container\Container;
@@ -53,13 +52,16 @@ use JsonSerializable;
  * @see https://en.wikipedia.org/wiki/Inversion_of_control
  * @see http://laravel.com/docs/5.1/container
  * @see http://php.net/manual/en/class.jsonserializable.php
- * @see PropertyOverloadable
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  * @package Aedart\DTO\Contracts
  */
-interface DataTransferObject extends PropertyOverloadable, ArrayAccess, Arrayable, Jsonable, JsonSerializable, Populatable{
-
+interface DataTransferObject extends ArrayAccess,
+    Arrayable,
+    Jsonable,
+    JsonSerializable,
+    Populatable
+{
     /**
      * Returns a list of the properties / attributes that
      * this Data Transfer Object can be populated with
