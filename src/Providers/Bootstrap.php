@@ -2,7 +2,7 @@
 
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Container\Container as ContainerInterface;
-use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Facade;
 
 /**
  * Class Bootstrap
@@ -39,10 +39,9 @@ class Bootstrap
     public static function boot()
     {
         $container = self::getContainer();
-
-        App::setFacadeApplication($container);
-
         $container->singleton('app', $container);
+
+        Facade::setFacadeApplication($container);
     }
 
     /**
@@ -50,9 +49,9 @@ class Bootstrap
      */
     public static function destroy()
     {
-        App::clearResolvedInstances();
+        Facade::clearResolvedInstances();
 
-        App::setFacadeApplication(null);
+        Facade::setFacadeApplication(null);
 
         self::setContainer(null);
     }
