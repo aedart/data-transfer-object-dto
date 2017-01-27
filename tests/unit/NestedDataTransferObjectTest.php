@@ -120,8 +120,7 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
         $this->assertSame($personData['name'], $person->name, 'Name of person is invalid');
         $this->assertSame($personData['address']['street'], $person->address->street, 'Street should have been set');
-        $this->assertSame($personData['address']['city']['name'], $person->address->city->name,
-            'City name should have been set');
+        $this->assertSame($personData['address']['city']['name'], $person->address->city->name, 'City name should have been set');
     }
 
     /**
@@ -250,12 +249,8 @@ class NestedDataTransferObjectTest extends UnitTestCase
     {
 
         // Bind the abstraction / interface
-        $this->getContainer()->bind(NotesInterface::class, function ($app, $parameters) {
-            //
-            // Please note that the parameters might NOT be
-            // used, if constructor has default values!
-            //
-            return new Notes($parameters);
+        $this->getContainer()->bind(NotesInterface::class, function ($app) {
+            return new Notes();
         });
 
         $personData = [
@@ -281,7 +276,12 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
         $person = new Person($personData);
 
-        $this->assertSame($personData['notes']['notes'], $person->notes->getNotes(), 'Notes should be the same!?');
+        $arr = $personData['notes']['notes'];
+        $actualNotes = $person->notes->getNotes();
+        foreach($arr as $value){
+            $result = in_array($value, $actualNotes);
+            $this->assertTrue($result, 'A value was not in the notes list');
+        }
     }
 
     /**
