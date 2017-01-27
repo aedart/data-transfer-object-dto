@@ -62,8 +62,11 @@ abstract class DataTransferObject implements DataTransferObjectInterface
      */
     public function __construct(array $data = [], Container $container = null)
     {
+        if(isset($container)){
+            $this->ioc = $container;
+        }
+
         $this->populate($data);
-        $this->ioc = $container;
     }
 
     public function container()
@@ -152,37 +155,18 @@ abstract class DataTransferObject implements DataTransferObjectInterface
         }
 
         // Get the resolved instance for the IoC container
-        $instance = $container->make($className, $value);
+        $instance = $container->make($className);
 
-        // At this point, we could return the resolved instance. Yet,
-        // if the resolved instance was a "concrete" class, it means
-        // that it's properties / constructor's arguments might not
-        // have been resolved correctly. This can happen if the given
-        // instance's constructor accepts arguments, but contain
-        // default values, in which case the default Laravel container
-        // will result to using those default values, instead of
-        // the ones provided. This is not a mistake, but rather a very
-        // clever way of dealing with such issues.
-        //
-        // For further reference, please review the default container
-        // method `resolveNonClass`, in \Illuminate\Container\Container
-        //
-        // In our case, if an instance of this abstraction has been
-        // resolved, then its default constructor values are used, which
-        // causes empty objects. Therefore, the way that we deal with
-        // this, if by checking if the given class was `bound` in the
-        // service container. If not, then we attempt to handle this
-        // by checking if its an instance of something we can populate.
-        if (!$this->container()->bound($className)) {
-            return $this->resolveUnboundInstance($instance, $parameter, $value);
-        }
-
-        return $instance;
+        // From Laravel 5.4, the Container::make method no longer accepts
+        // parameters, which is really sad... Nevertheless, we attempt to
+        // resolve this, simply by checking if the instance can be
+        // populated with the given value, which is exactly what the
+        // `resolveInstancePopulation` method does.
+        return $this->resolveInstancePopulation($instance, $parameter, $value);
     }
 
     /**
-     * Resolve an unbund instance - attempt to populate the given instance with the
-     * specified value
+     * Attempts to populate instance, if possible
      *
      * @param object $instance The instance that must be populated
      * @param ReflectionParameter $parameter Setter method's parameter reflection that requires the given instance
@@ -192,7 +176,7 @@ abstract class DataTransferObject implements DataTransferObjectInterface
      * @throws BindingResolutionException If the instance is not populatable and or the given value is not an
      *                                      array that can be passed to the populatable instance
      */
-    protected function resolveUnboundInstance($instance, ReflectionParameter $parameter, $value)
+    protected function resolveInstancePopulation($instance, ReflectionParameter $parameter, $value)
     {
 
         // Check if instance is populatable and if the given value
