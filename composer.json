@@ -17,10 +17,10 @@
   ],
   "require": {
     "php": ">=5.6.4",
-    "aedart/overload": "~2.0",
-    "aedart/util": "~2.0",
-    "illuminate/container": "5.3.*",
-    "illuminate/support": "5.3.*"
+    "aedart/overload": "~3.0",
+    "aedart/util": "~3.0",
+    "illuminate/container": "5.4.*",
+    "illuminate/support": "5.4.*"
   },
   "require-dev": {
     "aedart/license": "1.*",
@@ -39,12 +39,13 @@
     ]
   },
   "minimum-stability": "stable",
+  "prefer-stable": true,
   "scripts": {
     "post-update-cmd": "vendor/bin/license-manager license:copy vendor/aedart/license/aedart/BSD-3-Clause"
   },
   "extra": {
     "branch-alias": {
-      "dev-master": "2.2.x-dev"
+      "dev-master": "3.0.x-dev"
     }
   }
 }
