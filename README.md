@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/aedart/data-transfer-object-dto.svg?branch=master)](https://travis-ci.org/aedart/data-transfer-object-dto)
 [![Latest Stable Version](https://poser.pugx.org/aedart/dto/v/stable)](https://packagist.org/packages/aedart/dto)
 [![Total Downloads](https://poser.pugx.org/aedart/dto/downloads)](https://packagist.org/packages/aedart/dto)
 [![Latest Unstable Version](https://poser.pugx.org/aedart/dto/v/unstable)](https://packagist.org/packages/aedart/dto)
