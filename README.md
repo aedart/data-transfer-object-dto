@@ -295,7 +295,7 @@ Bootstrap::boot(); // A default service container is now available
 
 ### Nested instances
 
-Image that your `Person` DTO accepts more complex properties, e.g. an address;
+Imagine that your `Person` DTO accepts more complex properties, e.g. an address;
 
 _NOTE_: This example will only work if;
 
@@ -382,8 +382,8 @@ $data = [
     ]
 ];
 
-$person = new Person($data);    // Will automatically resolve (if possible) $address, create an instance of
-                                // of the Address class, and populate it with the given street value
+$person = new Person($data);                                    
+$address = $person->getAddress();   // Instance of Address - Will automatically be resolved (if possible).
 ```
 
 In the above example, [Laravel's Service Container](http://laravel.com/docs/5.1/container) attempts to find and create any concrete instances that are expected.
@@ -409,16 +409,14 @@ use Aedart\DTO\Providers\Bootstrap;
 Bootstrap::boot(); 
 
 // Register / bind your interfaces to concrete instances
-Bootstrap::getContainer()->bind(CityInterface::class, function($app, $data){
-    return new City($data); // Concrete implementation of the CityInterface - remember to pass in parameters!
+Bootstrap::getContainer()->bind(CityInterface::class, function($app){
+    return new City();
 });
 ```
 
-_NOTE_: Here, you are responsible for populating the given concrete instance
-
 #### Inside Laravel Application
 
-Inside your application's [service provider](http://laravel.com/docs/5.1/providers) (or perhaps a custom service provider), you can bind your DTO interfaces to concrete instances;
+Inside your application's [service provider](https://laravel.com/docs/5.4/providers) (or perhaps a custom service provider), you can bind your DTO interfaces to concrete instances;
 
 ```php
 <?php
@@ -426,13 +424,10 @@ Inside your application's [service provider](http://laravel.com/docs/5.1/provide
 // ... somewhere inside your service provider
 
 // Register / bind your interfaces to concrete instances
-$this->app->bind(CityInterface::class, function($app, $data){
-    return new City($data); // Concrete implementation of the CityInterface - remember to pass in parameters!
+$this->app->bind(CityInterface::class, function($app){
+    return new City();
 });
 ```
-
-_NOTE_: Here, you are responsible for populating the given concrete instance
-
 #### Example
 
 Given that you have bound your interfaces to concrete instances, then the following is possible
@@ -547,7 +542,7 @@ As soon as I receive the pull-request (_and have time for it_), I will review yo
 ## Acknowledgement
 
 * [Martin Fowler](http://martinfowler.com/aboutMe.html), for sharing his knowledge about [DTOs](http://martinfowler.com/eaaCatalog/dataTransferObject.html) and many other design patterns
-* [Taylor Otwell](https://github.com/taylorotwell), for creating [Laravel](http://laravel.com) and especially the [Service Container](http://laravel.com/docs/5.1/container), that I'm using daily
+* [Taylor Otwell](https://github.com/taylorotwell), for creating [Laravel](https://laravel.com) and especially the [Service Container](https://laravel.com/docs/5.4/container), that I'm using daily
 * [Jeffrey Way](https://github.com/JeffreyWay), for creating [Laracasts](https://laracasts.com/) - a great place to learn new things... And where I finally understood some of the principles of IoC!
 
 ## Versioning
