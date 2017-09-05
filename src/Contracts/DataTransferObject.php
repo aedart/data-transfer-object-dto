@@ -1,6 +1,6 @@
 <?php namespace Aedart\DTO\Contracts;
 
-use Aedart\Util\Interfaces\Populatable;
+use Aedart\Util\Contracts\Populatable;
 use ArrayAccess;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\Support\Arrayable;
@@ -8,7 +8,7 @@ use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
 
 /**
- * <h1>Interface Data Transfer Object</h1>
+ * <h1>Data Transfer Object</h1>
  *
  * Variation / Interpretation of the Data Transfer Object (DTO) design pattern (Distribution Pattern).
  * A DTO is responsible for;
@@ -68,14 +68,14 @@ interface DataTransferObject extends ArrayAccess,
      *
      * @return string[]
      */
-    public function populatableProperties();
+    public function populatableProperties() : array;
 
     /**
      * Returns the container that is responsible for
      * resolving dependency injection or eventual
      * nested object
      *
-     * @return Container IoC service Container
+     * @return Container|null IoC service Container or null if none defined
      */
-    public function container();
+    public function container() : ?Container;
 }
