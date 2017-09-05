@@ -36,7 +36,7 @@ class Bootstrap
     /**
      * Boots the Inversion of Control (IoC) Container
      */
-    public static function boot()
+    public static function boot() : void
     {
         $container = self::getContainer();
         $container->singleton('app', $container);
@@ -47,7 +47,7 @@ class Bootstrap
     /**
      * Destroy the Inversion of Control (IoC) Container
      */
-    public static function destroy()
+    public static function destroy() : void
     {
         Facade::clearResolvedInstances();
 
@@ -64,9 +64,9 @@ class Bootstrap
      *
      * @see getDefaultContainer
      *
-     * @return \Illuminate\Contracts\Container\Container
+     * @return \Illuminate\Contracts\Container\Container|null
      */
-    public static function getContainer()
+    public static function getContainer() : ?ContainerInterface
     {
         if (is_null(self::$container)) {
             self::setContainer(self::getDefaultContainer());
@@ -81,9 +81,9 @@ class Bootstrap
      * <b>Info</b>: You should invoke `boot()` after setting a
      * new container
      *
-     * @param \Illuminate\Contracts\Container\Container $container [optional]
+     * @param \Illuminate\Contracts\Container\Container|null $container [optional]
      */
-    public static function setContainer(ContainerInterface $container = null)
+    public static function setContainer(?ContainerInterface $container = null) : void
     {
         self::$container = $container;
     }
@@ -91,9 +91,9 @@ class Bootstrap
     /**
      * Returns a default IoC service container
      *
-     * @return \Illuminate\Contracts\Container\Container
+     * @return \Illuminate\Contracts\Container\Container|null
      */
-    public static function getDefaultContainer()
+    public static function getDefaultContainer() : ?ContainerInterface
     {
         return new Container();
     }
