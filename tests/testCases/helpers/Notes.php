@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 use Aedart\DTO\DataTransferObject;
 
 /**
@@ -12,7 +14,6 @@ use Aedart\DTO\DataTransferObject;
  */
 class Notes extends DataTransferObject implements NotesInterface
 {
-
     /**
      * @var string[]
      */
@@ -21,7 +22,7 @@ class Notes extends DataTransferObject implements NotesInterface
     /**
      * @param string[] $notes
      */
-    public function setNotes(array $notes)
+    public function setNotes(array $notes) : void
     {
         $this->notes = $notes;
     }
@@ -29,7 +30,7 @@ class Notes extends DataTransferObject implements NotesInterface
     /**
      * @return string[]
      */
-    public function getNotes()
+    public function getNotes() : array
     {
         return $this->notes;
     }

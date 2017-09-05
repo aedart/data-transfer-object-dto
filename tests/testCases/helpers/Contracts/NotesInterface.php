@@ -9,14 +9,15 @@
  */
 interface NotesInterface
 {
-
     /**
      * @param string[] $notes
+     *
+     * @return void
      */
-    public function setNotes(array $notes);
+    public function setNotes(array $notes) : void;
 
     /**
      * @return string[]
      */
-    public function getNotes();
+    public function getNotes() : array;
 }

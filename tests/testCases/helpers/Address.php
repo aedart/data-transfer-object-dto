@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 use Aedart\DTO\DataTransferObject;
 
 /**
@@ -13,7 +15,9 @@ use Aedart\DTO\DataTransferObject;
  */
 class Address extends DataTransferObject
 {
-
+    /**
+     * @var string
+     */
     protected $street = '';
 
     /**
@@ -24,7 +28,7 @@ class Address extends DataTransferObject
     /**
      * @return string
      */
-    public function getStreet()
+    public function getStreet() : ?string
     {
         return $this->street;
     }
@@ -32,7 +36,7 @@ class Address extends DataTransferObject
     /**
      * @param string $street
      */
-    public function setStreet($street)
+    public function setStreet(?string $street)
     {
         $this->street = $street;
     }
@@ -40,15 +44,15 @@ class Address extends DataTransferObject
     /**
      * @return City
      */
-    public function getCity()
+    public function getCity() : ?City
     {
         return $this->city;
     }
 
     /**
-     * @param City $city
+     * @param City|null $city
      */
-    public function setCity(City $city)
+    public function setCity(?City $city)
     {
         $this->city = $city;
     }

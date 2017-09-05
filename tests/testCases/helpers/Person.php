@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 use Aedart\DTO\DataTransferObject;
 
 /**
@@ -37,7 +39,7 @@ class Person extends DataTransferObject
     /**
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
@@ -45,55 +47,55 @@ class Person extends DataTransferObject
     /**
      * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
     }
 
     /**
-     * @return Address
+     * @return Address|null
      */
-    public function getAddress()
+    public function getAddress() : ?Address
     {
         return $this->address;
     }
 
     /**
-     * @param Address $address
+     * @param Address|null $address
      */
-    public function setAddress(Address $address)
+    public function setAddress(?Address $address)
     {
         $this->address = $address;
     }
 
     /**
-     * @return NotesInterface
+     * @return NotesInterface|null
      */
-    public function getNotes()
+    public function getNotes() : ?NotesInterface
     {
         return $this->notes;
     }
 
     /**
-     * @param NotesInterface $notes
+     * @param NotesInterface|null $notes
      */
-    public function setNotes(NotesInterface $notes)
+    public function setNotes(?NotesInterface $notes)
     {
         $this->notes = $notes;
     }
 
     /**
-     * @return BadUnpopulatableObject
+     * @return BadUnpopulatableObject|null
      */
-    public function getBadInstance()
+    public function getBadInstance() : ?BadUnpopulatableObject
     {
         return $this->badInstance;
     }
 
     /**
-     * @param BadUnpopulatableObject $badInstance
+     * @param BadUnpopulatableObject|null $badInstance
      */
-    public function setBadInstance(BadUnpopulatableObject $badInstance)
+    public function setBadInstance(?BadUnpopulatableObject $badInstance)
     {
         $this->badInstance = $badInstance;
     }

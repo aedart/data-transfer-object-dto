@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 /**
  * Class BadUnpopulatableObject
@@ -22,7 +23,7 @@ class BadUnpopulatableObject
     /**
      * @return string
      */
-    public function getFoo()
+    public function getFoo() : string
     {
         return $this->foo;
     }
@@ -30,7 +31,7 @@ class BadUnpopulatableObject
     /**
      * @param string $foo
      */
-    public function setFoo($foo)
+    public function setFoo(string $foo)
     {
         $this->foo = $foo;
     }

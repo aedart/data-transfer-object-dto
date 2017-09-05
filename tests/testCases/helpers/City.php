@@ -1,4 +1,6 @@
 <?php
+declare(strict_types=1);
+
 use Aedart\DTO\DataTransferObject;
 
 /**
@@ -21,7 +23,7 @@ class City extends DataTransferObject
     /**
      * @return string
      */
-    public function getName()
+    public function getName() : string
     {
         return $this->name;
     }
@@ -29,7 +31,7 @@ class City extends DataTransferObject
     /**
      * @param string $name
      */
-    public function setName($name)
+    public function setName(string $name)
     {
         $this->name = $name;
     }
@@ -37,7 +39,7 @@ class City extends DataTransferObject
     /**
      * @return int
      */
-    public function getZipCode()
+    public function getZipCode() : int
     {
         return $this->zipCode;
     }
@@ -45,7 +47,7 @@ class City extends DataTransferObject
     /**
      * @param int $zipCode
      */
-    public function setZipCode($zipCode)
+    public function setZipCode(int $zipCode)
     {
         $this->zipCode = $zipCode;
     }
