@@ -203,7 +203,7 @@ abstract class DataTransferObject implements DataTransferObjectInterface
      *
      * @return string String representation of this data transfer object
      */
-    public function __toString() : string
+    public function __toString()
     {
         return $this->toJson();
     }
