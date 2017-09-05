@@ -55,30 +55,30 @@ interface PersonInterface extends DataTransferObjectInterface
     /**
      * Set the person's name
      *
-     * @param string $name
+     * @param string|null $name
      */
-    public function setName($name);
+    public function setName(?string $name);
     
     /**
      * Get the person's name
      *
      * @return string
      */
-    public function getName();
+    public function getName() : ?string;
     
     /**
      * Set the person's age
      *
      * @param int $age
      */
-    public function setAge($age);
+    public function setAge(?int $age);
     
     /**
      * Get the person's age
      *
      * @return int
      */
-    public function getAge();
+    public function getAge() : ?int;
 }
 ```
 
@@ -88,6 +88,8 @@ Create a concrete implementation of your interface. Let it extend the default `D
  
 ```php
 <?php
+declare(strict_types=1);
+
 use Aedart\DTO\DataTransferObject;
 
 class Person extends DataTransferObject implements PersonInterface
@@ -102,7 +104,7 @@ class Person extends DataTransferObject implements PersonInterface
      *
      * @param string $name
      */
-    public function setName($name)
+    public function setName(?string $name)
     {
         $this->name = $name;
     }
@@ -112,7 +114,7 @@ class Person extends DataTransferObject implements PersonInterface
      *
      * @return string
      */
-    public function getName()
+    public function getName() : ?string
     {
         return $this->name;
     }
@@ -122,7 +124,7 @@ class Person extends DataTransferObject implements PersonInterface
      *
      * @param int $age
      */
-    public function setAge($age)
+    public function setAge(?int $age)
     {
         $this->age = $age;
     }
@@ -132,7 +134,7 @@ class Person extends DataTransferObject implements PersonInterface
      *
      * @return int
      */
-    public function getAge()
+    public function getAge() : ?int
     {
         return $this->age;
     } 
@@ -307,6 +309,8 @@ b) You have invoked the `Bootstrap::boot()` method, before using the given DTO (
 
 ```php
 <?php
+declare(strict_types=1);
+
 use Aedart\DTO\DataTransferObject;
 
 // None-interfaced DTO class is on purpose for this example
@@ -320,7 +324,7 @@ class Address extends DataTransferObject
      *
      * @param string $street
      */
-    public function setStreet($street)
+    public function setStreet(?string $street)
     {
         $this->street = $street;
     }
@@ -330,7 +334,7 @@ class Address extends DataTransferObject
      *
      * @return string
      */
-    public function getStreet()
+    public function getStreet() : ?string
     {
         return $this->street;
     }
@@ -353,7 +357,7 @@ class Person extends DataTransferObject implements PersonInterface
       *
       * @param Address $address
       */
-     public function setAddress(Address $address)
+     public function setAddress(?Address $address)
      {
          $this->address = $address;
      }
@@ -363,7 +367,7 @@ class Person extends DataTransferObject implements PersonInterface
       *
       * @return Address
       */
-     public function getAddress()
+     public function getAddress() : ?Address
      {
          return $this->address;
      }
@@ -386,7 +390,7 @@ $person = new Person($data);
 $address = $person->getAddress();   // Instance of Address - Will automatically be resolved (if possible).
 ```
 
-In the above example, [Laravel's Service Container](http://laravel.com/docs/5.1/container) attempts to find and create any concrete instances that are expected.
+In the above example, [Laravel's Service Container](http://laravel.com/docs/5.5/container) attempts to find and create any concrete instances that are expected.
 
 Furthermore, the default DTO abstraction (`Aedart\DTO\DataTransferObject`) will attempt to automatically populate that instance.
 
@@ -416,7 +420,7 @@ Bootstrap::getContainer()->bind(CityInterface::class, function($app){
 
 #### Inside Laravel Application
 
-Inside your application's [service provider](https://laravel.com/docs/5.4/providers) (or perhaps a custom service provider), you can bind your DTO interfaces to concrete instances;
+Inside your application's [service provider](https://laravel.com/docs/5.5/providers) (or perhaps a custom service provider), you can bind your DTO interfaces to concrete instances;
 
 ```php
 <?php
@@ -445,14 +449,14 @@ interface CityInterface extends DataTransferObjectInterface
      *
      * @param string $name
      */
-    public function setName($name);
+    public function setName(string $name) : void;
     
     /**
      * Get the city's name
      *
      * @return string
      */
-    public function getName();   
+    public function getName() : string;
 }
 
 // Concrete implementation of City
@@ -478,7 +482,7 @@ class Address extends DataTransferObject
       *
       * @param CityInterface $address
       */
-     public function setCity(CityInterface $city)
+     public function setCity(?CityInterface $city)
      {
          $this->city = $city;
      }
@@ -488,7 +492,7 @@ class Address extends DataTransferObject
       *
       * @return CityInterface
       */
-     public function getCity()
+     public function getCity() : ?CityInterface
      {
          return $this->city;
      }
