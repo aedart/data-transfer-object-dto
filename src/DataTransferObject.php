@@ -1,8 +1,11 @@
-<?php namespace Aedart\DTO;
+<?php
+declare(strict_types=1);
+
+namespace Aedart\DTO;
 
 use Aedart\DTO\Contracts\DataTransferObject as DataTransferObjectInterface;
 use Aedart\Overload\Traits\PropertyOverloadTrait;
-use Aedart\Util\Interfaces\Populatable;
+use Aedart\Util\Contracts\Populatable;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Facades\App;
@@ -30,7 +33,6 @@ use ReflectionParameter;
  */
 abstract class DataTransferObject implements DataTransferObjectInterface
 {
-
     use PropertyOverloadTrait {
         __set as __setFromTrait;
     }
@@ -60,27 +62,30 @@ abstract class DataTransferObject implements DataTransferObjectInterface
      * @param array $data [optional] This object's properties / attributes
      * @param Container $container [optional] Eventual container that is responsible for resolving dependency injection
      */
-    public function __construct(array $data = [], Container $container = null)
+    public function __construct(array $data = [], ?Container $container = null)
     {
-        if(isset($container)){
-            $this->ioc = $container;
-        }
+        $this->ioc = $container;
 
         $this->populate($data);
     }
 
-    public function container()
+    /**
+     * {@inheritdoc}
+     */
+    public function container() : ?Container
     {
-        if (is_null($this->ioc)) {
+        if( ! isset($this->ioc)){
             $this->ioc = App::getFacadeApplication();
         }
 
         return $this->ioc;
     }
 
-    public function __set($name, $value)
+    /**
+     * {@inheritdoc}
+     */
+    public function __set(string $name, $value)
     {
-
         $resolvedValue = $value;
 
         $methodName = $this->generateSetterName($name);
@@ -92,6 +97,140 @@ abstract class DataTransferObject implements DataTransferObjectInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function populatableProperties() : array
+    {
+        $reflection = new ReflectionClass($this);
+
+        $properties = $reflection->getProperties();
+
+        $output = [];
+
+        foreach ($properties as $reflectionProperty) {
+            $name = $reflectionProperty->getName();
+            $getterMethod = $this->generateGetterName($name);
+
+            if ($this->hasInternalMethod($getterMethod)) {
+                $output[] = $name;
+            }
+        }
+
+        return $output;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function populate(array $data = []) : void
+    {
+        foreach ($data as $name => $value) {
+            $this->__set($name, $value);
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+
+        $properties = $this->populatableProperties();
+        $output = [];
+
+        foreach ($properties as $property) {
+            // Make sure that property is not unset
+            if (!isset($this->$property)) {
+                continue;
+            }
+
+            $output[$property] = $this->__get($property);
+        }
+
+        return $output;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->$offset);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetGet($offset)
+    {
+        return $this->$offset;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->$offset = $value;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->$offset);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toJson($options = 0)
+    {
+        return json_encode($this->jsonSerialize(), $options);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    function jsonSerialize()
+    {
+        return $this->toArray();
+    }
+
+    /**
+     * Returns a string representation of this Data Transfer Object
+     *
+     * @return string String representation of this data transfer object
+     */
+    public function __toString() : string
+    {
+        return $this->toJson();
+    }
+
+    /**
+     * Method is invoked by `var_dump()`
+     *
+     * <br />
+     *
+     * By default, this method will NOT display the `_propertyAccessibilityLevel`
+     * property. This property is an internal behavioural modifier (state),
+     * that should not be used, unless very important / special case.
+     *
+     * @see \Aedart\Overload\Traits\Helper\PropertyAccessibilityTrait
+     *
+     * @return array All the available properties of this Data Transfer Object
+     */
+    public function __debugInfo() : array
+    {
+        return $this->toArray();
+    }
+
+    /***********************************************************************
+     * Internal Methods
+     **********************************************************************/
+
+    /**
      * Resolve and return the given value, for the given setter method
      *
      * @param string $setterMethodName The setter method to be invoked
@@ -99,7 +238,7 @@ abstract class DataTransferObject implements DataTransferObjectInterface
      *
      * @return mixed
      */
-    protected function resolveValue($setterMethodName, $value)
+    protected function resolveValue(string $setterMethodName, $value)
     {
         $reflection = new ReflectionClass($this);
 
@@ -124,15 +263,16 @@ abstract class DataTransferObject implements DataTransferObjectInterface
      */
     protected function resolveParameter(ReflectionParameter $parameter, $value)
     {
-
         // If there is no class for the given parameter
         // then some kind of primitive data has been provided
         // and thus we need only to return it.
-        if (is_null($parameter->getClass())) {
+        $paramClass = $parameter->getClass();
+        if ( ! isset($paramClass)) {
             return $value;
         }
 
-        $className = $parameter->getClass()->getName();
+        // Fetch the name of the class
+        $className = $paramClass->getName();
 
         // If the value corresponds to the given expected class,
         // then there is no need to resolve anything from the
@@ -199,108 +339,5 @@ abstract class DataTransferObject implements DataTransferObjectInterface
         );
 
         throw new BindingResolutionException($message);
-    }
-
-    public function populatableProperties()
-    {
-        $reflection = new ReflectionClass($this);
-
-        $properties = $reflection->getProperties();
-
-        $output = [];
-
-        foreach ($properties as $reflectionProperty) {
-            $name = $reflectionProperty->getName();
-            $getterMethod = $this->generateGetterName($name);
-
-            if ($this->hasInternalMethod($getterMethod)) {
-                $output[] = $name;
-            }
-        }
-
-        return $output;
-    }
-
-    public function populate(array $data = [])
-    {
-        foreach ($data as $name => $value) {
-            $this->__set($name, $value);
-        }
-    }
-
-    public function toArray()
-    {
-
-        $properties = $this->populatableProperties();
-        $output = [];
-
-        foreach ($properties as $property) {
-            // Make sure that property is not unset
-            if (!isset($this->$property)) {
-                continue;
-            }
-
-            $output[$property] = $this->__get($property);
-        }
-
-        return $output;
-    }
-
-    public function offsetExists($offset)
-    {
-        return isset($this->$offset);
-    }
-
-    public function offsetGet($offset)
-    {
-        return $this->$offset;
-    }
-
-    public function offsetSet($offset, $value)
-    {
-        $this->$offset = $value;
-    }
-
-    public function offsetUnset($offset)
-    {
-        unset($this->$offset);
-    }
-
-    public function toJson($options = 0)
-    {
-        return json_encode($this->jsonSerialize(), $options);
-    }
-
-    function jsonSerialize()
-    {
-        return $this->toArray();
-    }
-
-    /**
-     * Returns a string representation of this Data Transfer Object
-     *
-     * @return string String representation of this data transfer object
-     */
-    public function __toString()
-    {
-        return $this->toJson();
-    }
-
-    /**
-     * Method is invoked by `var_dump()`
-     *
-     * <br />
-     *
-     * By default, this method will NOT display the `_propertyAccessibilityLevel`
-     * property. This property is an internal behavioural modifier (state),
-     * that should not be used, unless very important / special case.
-     *
-     * @see \Aedart\Overload\Traits\Helper\PropertyAccessibilityTrait
-     *
-     * @return array All the available properties of this Data Transfer Object
-     */
-    public function __debugInfo()
-    {
-        return $this->toArray();
     }
 }
