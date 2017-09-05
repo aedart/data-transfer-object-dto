@@ -8,7 +8,6 @@ use Aedart\Testing\TestCases\Unit\UnitTestCase;
  * Class DataTransferObjectTest
  *
  * @group dto
- * @coversDefaultClass Aedart\DTO\DataTransferObject
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */

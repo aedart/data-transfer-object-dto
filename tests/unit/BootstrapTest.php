@@ -1,6 +1,5 @@
 <?php
 
-use \Mockery as m;
 use Aedart\DTO\DataTransferObject;
 use Aedart\DTO\Providers\Bootstrap;
 use Illuminate\Contracts\Container\Container;
@@ -11,7 +10,6 @@ use Aedart\Testing\TestCases\Unit\UnitTestCase;
  * Class BootstrapTest
  *
  * @group bootstrap
- * @coversDefaultClass Aedart\DTO\Providers\Bootstrap
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
@@ -25,11 +23,11 @@ class BootstrapTest extends UnitTestCase
     /**
      * Get a Dto mock
      *
-     * @return m\MockInterface|DataTransferObject
+     * @return DataTransferObject
      */
-    protected function getDtoMock()
+    protected function getDto()
     {
-        return m::mock(DataTransferObject::class)->makePartial();
+        return new City();
     }
 
     /***************************************************************
@@ -38,10 +36,6 @@ class BootstrapTest extends UnitTestCase
 
     /**
      * @test
-     * @covers ::boot
-     * @covers ::setContainer
-     * @covers ::getContainer
-     * @covers ::getDefaultContainer
      */
     public function canBoot()
     {
@@ -56,8 +50,6 @@ class BootstrapTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @depends canBoot
      */
     public function hasSetFacadeApplication()
     {
@@ -67,20 +59,16 @@ class BootstrapTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @covers Aedart\DTO\DataTransferObject::container
      */
     public function dtoHasContainerSet()
     {
-        $dto = $this->getDtoMock();
+        $dto = $this->getDto();
 
         $this->assertInstanceOf(Container::class, $dto->container(), 'Invalid container on DTO');
     }
 
     /**
      * @test
-     *
-     * @covers ::destroy
      *
      * @depends hasSetFacadeApplication
      */
@@ -107,12 +95,10 @@ class BootstrapTest extends UnitTestCase
      * @test
      *
      * @depends hasUnsetFacadeApplication
-     *
-     * @covers  Aedart\DTO\DataTransferObject::container
      */
     public function dtoHasNoContainerSet()
     {
-        $dto = $this->getDtoMock();
+        $dto = $this->getDto();
 
         $this->assertNull($dto->container(), 'No container should be available');
     }

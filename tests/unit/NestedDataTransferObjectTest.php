@@ -2,12 +2,13 @@
 
 use Aedart\DTO\Providers\Bootstrap;
 use Aedart\Testing\TestCases\Unit\UnitTestCase;
+use Illuminate\Contracts\Container\Container;
 
 /**
  * Class NestedDataTransferObjectTest
  *
  * @group dto
- * @coversDefaultClass Aedart\DTO\DataTransferObject
+ * @group dto-nested
  *
  * @author Alin Eugen Deac <aedart@gmail.com>
  */
@@ -35,9 +36,9 @@ class NestedDataTransferObjectTest extends UnitTestCase
     /**
      * Get the IoC service container
      *
-     * @return \Illuminate\Contracts\Container\Container
+     * @return Container|null
      */
-    protected function getContainer()
+    protected function getContainer() : ?Container
     {
         return Bootstrap::getContainer();
     }
@@ -48,7 +49,6 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
     /**
      * @test
-     * @covers ::__set
      */
     public function canPopulatePropertyOfPrimitiveType()
     {
@@ -63,16 +63,12 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
     /**
      * @test
-     * @covers ::__set
-     *
-     * @covers ::resolveValue
-     * @covers ::resolveParameter
      */
     public function canPopulateWithNestedObjectInstance()
     {
         $cityData = [
             'name' => $this->faker->city,
-            'zipCode' => $this->faker->postcode
+            'zipCode' => (int) $this->faker->postcode
         ];
 
         $addressData = [
@@ -97,11 +93,6 @@ class NestedDataTransferObjectTest extends UnitTestCase
      * Thus, there is no need to `bind` them, in this case
      *
      * @test
-     * @covers ::__set
-     *
-     * @covers ::resolveValue
-     * @covers ::resolveParameter
-     * @covers ::resolveUnboundInstance
      */
     public function canResolveAndPopulateUnboundConcreteInstances()
     {
@@ -111,7 +102,7 @@ class NestedDataTransferObjectTest extends UnitTestCase
                 'street' => $this->faker->streetName,
                 'city' => [
                     'name' => $this->faker->city,
-                    'zipCode' => $this->faker->postcode
+                    'zipCode' => (int) $this->faker->postcode
                 ]
             ]
         ];
@@ -125,10 +116,6 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
     /**
      * @test
-     * @covers ::__set
-     *
-     * @covers ::resolveValue
-     * @covers ::resolveParameter
      *
      * @expectedException \Illuminate\Contracts\Container\BindingResolutionException
      */
@@ -142,7 +129,7 @@ class NestedDataTransferObjectTest extends UnitTestCase
                 'street' => $this->faker->streetName,
                 'city' => [
                     'name' => $this->faker->city,
-                    'zipCode' => $this->faker->postcode
+                    'zipCode' => (int) $this->faker->postcode
                 ]
             ]
         ];
@@ -152,7 +139,6 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
     /**
      * @test
-     * @covers ::jsonSerialize
      */
     public function canSerialiseNestedInstances()
     {
@@ -162,7 +148,7 @@ class NestedDataTransferObjectTest extends UnitTestCase
                 'street' => $this->faker->streetName,
                 'city' => [
                     'name' => $this->faker->city,
-                    'zipCode' => $this->faker->postcode
+                    'zipCode' => (int) $this->faker->postcode
                 ]
             ]
         ];
@@ -176,12 +162,6 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
     /**
      * @test
-     *
-     * @covers ::__set
-     *
-     * @covers ::resolveValue
-     * @covers ::resolveParameter
-     * @covers ::resolveUnboundInstance
      */
     public function canResolveUsingOverloadMethodDirectly()
     {
@@ -191,7 +171,7 @@ class NestedDataTransferObjectTest extends UnitTestCase
             'street' => $this->faker->streetName,
             'city' => [
                 'name' => $this->faker->city,
-                'zipCode' => $this->faker->postcode
+                'zipCode' => (int) $this->faker->postcode
             ]
         ];
 
@@ -203,10 +183,6 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
     /**
      * @test
-     * @covers ::__set
-     *
-     * @covers ::resolveValue
-     * @covers ::resolveParameter
      *
      * @expectedException \Illuminate\Contracts\Container\BindingResolutionException
      */
@@ -218,7 +194,7 @@ class NestedDataTransferObjectTest extends UnitTestCase
                 'street' => $this->faker->streetName,
                 'city' => [
                     'name' => $this->faker->city,
-                    'zipCode' => $this->faker->postcode
+                    'zipCode' => (int) $this->faker->postcode
                 ]
             ],
 
@@ -240,10 +216,6 @@ class NestedDataTransferObjectTest extends UnitTestCase
 
     /**
      * @test
-     * @covers ::__set
-     *
-     * @covers ::resolveValue
-     * @covers ::resolveParameter
      */
     public function canResolveAndPopulateBoundAbstractInstances()
     {
@@ -259,7 +231,7 @@ class NestedDataTransferObjectTest extends UnitTestCase
                 'street' => $this->faker->streetName,
                 'city' => [
                     'name' => $this->faker->city,
-                    'zipCode' => $this->faker->postcode
+                    'zipCode' => (int) $this->faker->postcode
                 ]
             ],
 
@@ -290,11 +262,6 @@ class NestedDataTransferObjectTest extends UnitTestCase
      * interface and thus we do not know how to populate it and should fail!
      *
      * @test
-     * @covers ::__set
-     *
-     * @covers ::resolveValue
-     * @covers ::resolveParameter
-     * @covers ::resolveUnboundInstance
      *
      * @expectedException \Illuminate\Contracts\Container\BindingResolutionException
      */
@@ -322,10 +289,6 @@ class NestedDataTransferObjectTest extends UnitTestCase
      * @see canPopulateWithNestedObjectInstance Similar test!
      *
      * @test
-     * @covers ::__set
-     *
-     * @covers ::resolveValue
-     * @covers ::resolveParameter
      */
     public function canPopulateWithConcreteBadInstance()
     {
