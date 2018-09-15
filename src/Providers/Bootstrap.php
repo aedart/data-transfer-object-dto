@@ -5,6 +5,8 @@ use Illuminate\Contracts\Container\Container as ContainerInterface;
 use Illuminate\Support\Facades\Facade;
 
 /**
+ * @deprecated Use \Aedart\Container\IoC, in aedart/athenaeum package
+ *
  * Class Bootstrap
  *
  * <br />

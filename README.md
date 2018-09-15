@@ -4,7 +4,9 @@
 [![Latest Unstable Version](https://poser.pugx.org/aedart/dto/v/unstable)](https://packagist.org/packages/aedart/dto)
 [![License](https://poser.pugx.org/aedart/dto/license)](https://packagist.org/packages/aedart/dto)
 
-# Data Transfer Object (DTO)
+# Deprecated - Data Transfer Object (DTO)
+
+Package has been replaced by [aedart/athenaeum](https://github.com/aedart/athenaeum)
 
 A variation / interpretation of the Data Transfer Object (DTO) design pattern (Distribution Pattern). A DTO is nothing more than an object that
 can hold some data. Most commonly it is used for for transporting that data between systems, e.g. a client and a server. 

@@ -13,6 +13,8 @@ use ReflectionClass;
 use ReflectionParameter;
 
 /**
+ * @deprecated Use \Aedart\Dto, in aedart/athenaeum package
+ *
  * <h1>Abstract Data Transfer Object</h1>
  *
  * This DTO abstraction offers default implementation of the following;

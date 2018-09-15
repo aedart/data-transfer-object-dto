@@ -8,6 +8,8 @@ use Illuminate\Contracts\Support\Jsonable;
 use JsonSerializable;
 
 /**
+ * @deprecated Use \Aedart\Contracts\Dto, in aedart/athenaeum package
+ *
  * <h1>Data Transfer Object</h1>
  *
  * Variation / Interpretation of the Data Transfer Object (DTO) design pattern (Distribution Pattern).
